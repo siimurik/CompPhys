@@ -1,0 +1,8 @@
+
+Solver for 1D boundary-value problem second-order ODE
+Method: unilizes the shooting method based on the method of secants
+(calls 4th-order Runge-Kutta to solve the initial value problem)
+
+Calculations took 1.0110E-03seconds. 
+
+
