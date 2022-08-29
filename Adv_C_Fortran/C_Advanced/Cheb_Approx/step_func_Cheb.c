@@ -1,3 +1,12 @@
+/* Compile and execute with:
+ * ----------------------------------------------------------
+ *              	Ubuntu (KDE)
+ * ----------------------------------------------------------
+ *	$ $ export LD_LIBRARY_PATH="/home/kde_siimep/gsl/lib"
+ *      $ gcc -I/home/kde_siimep/gsl/include -L/home/kde_siimep/gsl/lib step_func_Cheb.c -o cheb -lgsl -lgslcblas -lm 
+ *      $ ./cheb > data.dat
+ *
+ * */
 #include <stdio.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_chebyshev.h>
