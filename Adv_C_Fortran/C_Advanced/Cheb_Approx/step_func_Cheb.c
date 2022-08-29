@@ -2,7 +2,7 @@
  * ----------------------------------------------------------
  *              	Ubuntu (KDE)
  * ----------------------------------------------------------
- *	$ $ export LD_LIBRARY_PATH="/home/kde_siimep/gsl/lib"
+ *	$ export LD_LIBRARY_PATH="/home/kde_siimep/gsl/lib"
  *      $ gcc -I/home/kde_siimep/gsl/include -L/home/kde_siimep/gsl/lib step_func_Cheb.c -o cheb -lgsl -lgslcblas -lm 
  *      $ ./cheb > data.dat
  *
