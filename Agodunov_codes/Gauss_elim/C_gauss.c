@@ -50,8 +50,8 @@ int main(void) {
     for(k=0; k<=n-1; k++){
 	    for(i=k+1; i<n; i++){
 	        p = a[i][k]/a[k][k];
-            for(j=k; j<=n; j++){
-		        a[i][j] = a[i][j] - (p * a[k][j]);
+            	for(j=k; j<=n; j++){
+			a[i][j] = a[i][j] - (p * a[k][j]);
 		    //printf("\n a[%d][%d] = %f",i,j,a[i][j]);
 	        }
 	    }
