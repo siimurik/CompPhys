@@ -1,7 +1,9 @@
 /*
+ Necessary package for compilation:
+    $ sudo apt install libgsl-dev
  Compile and execute with:
-    > gcc -lgsl -lgslcblas -lm cpt_integrate.c -o int
-    > ./int
+    $ gcc -lgsl -lgslcblas -lm cpt_integrate.c -o int
+    $ ./int
 ------------------------------------------------------------------------
  To solve an integral numerically in C programming, you can use the GNU 
  Scientific Library (GSL) library. This library provides a collection of
