@@ -1,3 +1,8 @@
+/*
+ Compile and execute with:
+	$ gcc C_gauss_ChatGPT.c -o gauss
+	$ ./gauss
+*/
 #include <stdio.h>
 
 #define N 3 // number of equations
