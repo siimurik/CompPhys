@@ -1,5 +1,8 @@
 /*
 ===============================================================================
+ This code needs the FFTW libray to run the code:
+    $ sudo apt install libfftw3-dev
+===============================================================================
  Complile and execute with:
     $ gcc mixing.c -o mix -lm -lfftw3
     $ ./mix
