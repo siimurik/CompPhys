@@ -1,5 +1,11 @@
 /*
+ This code needs the BLAS library to be installed:
+    $ sudo apt install libblas-dev
+ Compile and execute
+    $ gcc cblas_MatMat.c -o mat -lblas
+    or
     > gcc cblas_MatMat.c -o mat -lcblas -lblas
+    ./mat
 */
 #include <stdio.h>
 #include <stdlib.h>
