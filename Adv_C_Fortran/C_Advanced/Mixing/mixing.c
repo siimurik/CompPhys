@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include <string.h>
 #include <stdbool.h>
 #include <complex.h>
@@ -15,8 +16,6 @@
 #define N 512
 #define M_PI 3.14159265358979323846
 
-//void p_diffuse(double c_init[N][N], double matrix[N][N], bool in_x_direction);
-//void iterate(int no_of_times, double c_old[N][N], double c_init[N][N]);
 void p_diffuse(double matrix[N][N], bool in_x_direction);
 void iterate(int no_of_times, double c_old[N][N]);
 void matrix_csv(char *filename,double a[][N],int n,int m);
@@ -26,39 +25,44 @@ void fft1(complex double *data, int n);
 void fftshift(complex double data[][N], int rows, int cols);
 
 int main() {
+    
+    //Declaraion of initial variables
     double a = 200;
-
-    static double c1[N][N] = {0};
-    static double c_final[N][N] = {0};
-    static double c_init[N][N] = {0};
+    static double c1[N][N];
     int i, j;
-
 
     for (i = 0; i < N; i++) { //same code that was in lecture: initial sine
         for (j = 0; j < N; j++) {
             c1[i][j] = sin(j * M_PI * 2 / N); //sine on i-axis
-            //c_init[i][j] = sin(j * M_PI * 2 / N); //same sine for the iterate() command, stays constant.
         }
     }
 
-    //signum(int(N / 2), c1);
-    //diffuse(amount, c1, True);
-
-    //iterate(11, c1, c_init);
+    // Start the clock
+    clock_t start = clock();
     iterate(11, c1);
+    // Stop the clock
+    clock_t end = clock();
+
+    // Calculate the elapsed time in seconds
+    double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
+
     // print the result (only the first few elements)
+    printf("\nPrinting out the firts 5x5 elements of resulting matrix:\n");
     for (i = 0; i < 5; i++){
         for (j = 0; j < 5; j++){
             printf("%f ", c1[i][j]);
         }
         printf("\n");
     }
+    // Print the elapsed time
+    printf("\nIteration took %g seconds.\n", elapsed_time);
+
+    // Save matrix output to CSV format 
     char str[10] = "colors";
     matrix_csv(str,c1,N,N);
-
-    // Convert the c1 array to a fftw_complex array
-    // static fftw_complex *input;
-    // init_input(input, c1);
+    // End of computations
+    //----------------------------------------------------------------------
+    // Start of Fourier transform part
 
     // Allocate memory for the input array
     fftw_complex *input = fftw_malloc(sizeof(fftw_complex) * N * N);
@@ -87,13 +91,24 @@ int main() {
     // Create a plan for computing the FFT of the input array
     fftw_plan plan = fftw_plan_dft_2d(N, N, input, &fft[0][0], FFTW_FORWARD, FFTW_ESTIMATE);
 
+    // Start the clock
+    start = clock();
+
     // Compute the FFT of the input array
     fftw_execute(plan);
 
     // Shift the FFT output so that the origin is at the center of the array
     fftshift(fft, N, N);
 
+    // Stop the clock
+    end = clock();
+
+    // Calculate the elapsed time in seconds
+    elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
+
+
     // Print the first few elements of the FFT output
+    printf("\nPrinting out the first few elements of the FFT output:\n");
     for (int i = 0; i < 5; i++){
         for (int j = 0; j < 5; j++){
             printf("%f ", fft[i][j]);
@@ -101,8 +116,12 @@ int main() {
     printf("\n");
     }
 
+    // Print the elapsed time
+    printf("\nFFT took %g seconds.\n", elapsed_time);
+
     // Write the values in the data array to a CSV file
     write_array_to_csv("fourier.csv", fft, N, N);
+
 
     // Clean up
     fftw_destroy_plan(plan);
@@ -111,7 +130,9 @@ int main() {
 
     return 0;
 }
-//---------------------------------------------------------------------------------
+//================================================================================
+// Start of the diffusion function
+//================================================================================
 void p_diffuse(double matrix[N][N], bool in_x_direction) {
     double new_matrix[N][N] = {0};
     //double c_init[N][N] = {0};
@@ -138,18 +159,13 @@ void p_diffuse(double matrix[N][N], bool in_x_direction) {
         }
     }
 }
-//---------------------------------------------------------------------------------
+//================================================================================
+// Start of the iterate function
+//================================================================================
 void iterate(int no_of_times, double c_old[N][N]) {
-    double c[N][N] = {0};
+    double c[N][N];
     int k, i, j;
     double a = 200;
-    //double c_init[N][N];
-
-    //for (i = 0; i < N; i++) { //same code that was in lecture: initial sine
-    //    for (j = 0; j < N; j++) {
-    //        c_init[i][j] = sin(j * M_PI * 2 / N); //same sine for the iterate() command, stays constant.
-    //    }
-    //}
 
     for (k = 0; k < no_of_times; k++) {
         for (i = 0; i < N; i++) {
@@ -161,10 +177,7 @@ void iterate(int no_of_times, double c_old[N][N]) {
                 }
             }
         }
-        //diffuse(amount, c, k % 2 == 0);
         p_diffuse(c, k % 2 == 0);
-        //p_diffuse(c_init, c, k % 2 == 0);
-
         for (i = 0; i < N; i++) { //put elements of new matrix into the old one, continue changing matrix c.
             for (j = 0; j < N; j++) {
                 c_old[i][j] = c[i][j];
@@ -177,8 +190,9 @@ void iterate(int no_of_times, double c_old[N][N]) {
         }
     }
 }
-//---------------------------------------------------------------------------------
+//================================================================================
 // Function that creates and stores the temperature matrix values
+//================================================================================
 void matrix_csv(char *filename,double a[][N],int n,int m){
     printf("\n Creating %s.csv file for matrix.",filename);
     FILE *fp;
@@ -282,7 +296,7 @@ void fft2(complex double (*data)[N], int rows, int cols)
     //free(tmp);
 }
 
-/*
+/*================================================================================
 This function computes the one-dimensional discrete Fourier transform 
 (DFT) of the input array data using the Cooley-Tukey algorithm. It 
 takes in the array data and its size n as arguments, and it returns 
@@ -295,7 +309,7 @@ of each subarray, and then combines the results to obtain the DFT of the
 entire array. This allows the computation of the DFT to be performed in 
 O(n log n) time, which is much faster than the O(n^2) time complexity 
 of the naive DFT algorithm.
-*/
+================================================================================*/
 void fft1(complex double *data, int n)
 {
     complex double *tmp;
@@ -323,8 +337,9 @@ void fft1(complex double *data, int n)
     /* Free memory for temporary array */
     free(tmp);
 }
-
+//================================================================================
 // Function to write the values in a 2D array to a CSV file
+//================================================================================
 void write_array_to_csv(const char *filename, const complex double data[][N], int rows, int cols) {
     printf("\n Creating %s.csv file for matrix.",filename);
     // Open a file for writing the CSV data
