@@ -10,7 +10,9 @@ and eigenvectors of a general matrix.
 To use the dgeev routine, you will first need 
 to install the LAPACK library. Here is an 
 example of how to do this on a Linux system:
-    > $ sudo dnf install liblapack-dev
+    $ sudo dnf install liblapack-dev
+For Ubuntu:
+    $ sudo apt-get install liblapack-dev liblapack-doc liblapack-pic liblapack3 liblapack-test  liblapacke liblapacke-dev
 ---------------------------------------------
  Compile and execute with:
     > gcc eigeng.c -o eigeng -llapacke
