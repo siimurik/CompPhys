@@ -7,6 +7,15 @@
     $ gcc mixing.c -o mix -lm -lfftw3
     $ ./mix
 ===============================================================================
+ How to set up and compile on a Mac:
+    $ brew install fftw
+    $ brew --prefix fftw
+    > /opt/homebrew/opt/fftw # The path where fftw is installed using homebrew
+    $ gcc -o mix mixing.c -L/opt/homebrew/opt/fftw/lib -lfftw3
+    $ ./mix
+ ---
+ Enjoy
+ ===============================================================================
 */
 #include <stdio.h>
 #include <stdlib.h>
