@@ -4,7 +4,7 @@
 ! In GNU Plot:
 !   $ plot 'out_2.csv' with lines
 !  =============================================================================
-program dgstv_solver
+program dgtsv_solver
     implicit none
     integer          N, NRHS
     parameter        ( N = 5001, NRHS = 1 )
