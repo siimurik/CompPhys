@@ -1,16 +1,20 @@
 /*
+=======================================================
  This code needs the BLAS library to be installed:
     $ sudo apt install libblas-dev
+=======================================================
  Compile and execute
     $ gcc cblas_MatMat.c -o mat -lblas
     or
     > gcc cblas_MatMat.c -o mat -lcblas -lblas
     ./mat
+=======================================================
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <cblas.h>
-
+#include <time.h>
+#define dim 1000
 int main()
 {
     // allocate memory for the matrices
@@ -18,7 +22,9 @@ int main()
     //double *B = malloc(sizeof(double) * 1000000);   // 1000x1000 matrices
     //double *C = malloc(sizeof(double) * 1000000);   // 1000x1000 matrices
     // Define the dimensions of the matrices
-    int m = 1000, n = 1000, k = 1000;
+    int m = dim, n = dim, k = dim;
+
+    printf("Dimension of matrix matrix multiplicaton: %d x %d.\n", m,n);
 
     // Allocate memory for the matrices
     double *A = malloc(m * k * sizeof(double)); // 1000x1000 matrix
@@ -29,23 +35,56 @@ int main()
     {
         for (int j = 0; j < k; j++)
         {
-            A[i * 1000 + j] = (double) i * j;
-            B[i * 1000 + j] = (double) i + j;
-        }
+            //A[i * 1000 + j] = (double) i * j;
+            //B[i * 1000 + j] = (double) i + j;
+	        A[i * m + j] = ((double)rand()/(double)(RAND_MAX));
+	        B[i * n + j] = ((double)rand()/(double)(RAND_MAX));
+	    }
     }
 
-    // perform matrix multiplication using dgemm()
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1.0, A, k, B, n, 0.0, C, n);
-
     // print the result (only the first few elements)
+    printf("\nPrinting out the first 5x5 elements of matrix A:\n");
     for (int i = 0; i < 5; i++)
     {
         for (int j = 0; j < 5; j++)
         {
-            printf("%f ", C[i * 1000 + j]);
+            printf("%f ", A[i * m + j]);
         }
         printf("\n");
     }
+    printf("\nPrinting out the first 5x5 elements of matrix B:\n");
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            printf("%f ", B[i * n + j]);
+        }
+        printf("\n");
+    }
+
+    // Get starting time
+    clock_t tic = clock();
+
+    // perform matrix multiplication using dgemm()
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1.0, A, k, B, n, 0.0, C, n);
+    
+    // Get end time
+    clock_t toc = clock();
+
+    // print the result (only the first few elements)
+    printf("\nPrinting out the first 5x5 elements of the result matrix:\n");
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            printf("%f ", C[i * k + j]);
+        }
+        printf("\n");
+    }
+    
+    // Calculate the elapsed time in seconds
+    double elapsed_time = (double)(toc - tic) / CLOCKS_PER_SEC;
+    printf("\nMatrix multiplication took %lf seconds.\n", elapsed_time);
 
     // free the allocated memory
     free(A);
