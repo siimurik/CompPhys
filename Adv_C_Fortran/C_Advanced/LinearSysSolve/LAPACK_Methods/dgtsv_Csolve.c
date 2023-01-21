@@ -96,7 +96,7 @@ int main(void) {
     elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
     // print the elapsed time
-    printf("Elapsed time: %f seconds.\n", elapsed_time);
+    printf("Elapsed time: %lf seconds.\n", elapsed_time);
 
     return 0;
 }
