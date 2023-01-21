@@ -1,6 +1,6 @@
 /*
  Compile and execute with:
-    > gcc cblas_matmu_vec.c -o vecform -lcblas -lblas
+    > gcc cblas_matmul_vec.c -o vecform -lblas
     > ./vecform
 */
 #include <stdio.h>
