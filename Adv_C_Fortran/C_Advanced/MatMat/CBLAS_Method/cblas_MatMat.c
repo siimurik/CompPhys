@@ -6,8 +6,8 @@
  Compile and execute
     $ gcc cblas_MatMat.c -o mat -lblas
     or
-    > gcc cblas_MatMat.c -o mat -lcblas -lblas
-    ./mat
+    $ gcc cblas_MatMat.c -o mat -lcblas -lblas
+    $ ./mat
  Also it might be a good idea to use a different
  optimizer as well. Use it together with 'time' like so:
     $ gcc cblas_MatMat.c -O2 -lblas
