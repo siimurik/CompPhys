@@ -1,28 +1,30 @@
 /*
-=======================================================
+========================================================
  This code needs the BLAS library to be installed:
     $ sudo apt install libblas-dev
-=======================================================
+========================================================
  Compile and execute
     $ gcc cblas_MatMat.c -o mat -lblas
     or
     > gcc cblas_MatMat.c -o mat -lcblas -lblas
     ./mat
-=======================================================
+ Also it might be a good idea to use a different
+ optimizer as well. Use it together with 'time' like so:
+    $ gcc cblas_MatMat.c -O2 -lblas
+    $ time ./a.out
+========================================================
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <cblas.h>
 #include <time.h>
+
 #define dim 1000
 int main()
 {
-    // allocate memory for the matrices
-    //double *A = malloc(sizeof(double) * 1000000);   // 1000x1000 matrices
-    //double *B = malloc(sizeof(double) * 1000000);   // 1000x1000 matrices
-    //double *C = malloc(sizeof(double) * 1000000);   // 1000x1000 matrices
     // Define the dimensions of the matrices
     int m = dim, n = dim, k = dim;
+    struct timespec start, stop;
 
     printf("Dimension of matrix matrix multiplicaton: %d x %d.\n", m,n);
 
@@ -63,13 +65,14 @@ int main()
     }
 
     // Get starting time
-    clock_t tic = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     // perform matrix multiplication using dgemm()
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1.0, A, k, B, n, 0.0, C, n);
-    
+
     // Get end time
-    clock_t toc = clock();
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+    
 
     // print the result (only the first few elements)
     printf("\nPrinting out the first 5x5 elements of the result matrix:\n");
@@ -83,8 +86,9 @@ int main()
     }
     
     // Calculate the elapsed time in seconds
-    double elapsed_time = (double)(toc - tic) / CLOCKS_PER_SEC;
-    printf("\nMatrix multiplication took %lf seconds.\n", elapsed_time);
+    double time_taken = (stop.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (stop.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("\nMatrix multiplication took %lf seconds.\n", time_taken);
 
     // free the allocated memory
     free(A);
