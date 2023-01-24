@@ -1,7 +1,7 @@
 /*
 =======================================================
  Compile and execute with:
-    $ gcc cheb_approx.c -o cheb -lgsl
+    $ gcc cheb_approx.c -o cheb -lgsl -lm
     $ ./cheb
 =======================================================
 */
