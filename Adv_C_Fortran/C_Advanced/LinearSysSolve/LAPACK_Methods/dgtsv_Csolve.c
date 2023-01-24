@@ -19,7 +19,7 @@ int main(void) {
     int n = N, nrhs = NRHS, lda = LDA, ldb = LDB, info;
     double h;
     static double dl[N-1], d[N], du[N-1], a[LDA*N], b[LDB*NRHS];
-    double start_time, end_time, elapsed_time;
+    struct timespec start, stop;
     static double x[N];
     int i;
 
@@ -59,13 +59,15 @@ int main(void) {
     b[N-1] = h/2.0*(x[N-1]+5.0) - 1.0;
 
     // record the starting time
-    start_time = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     // Solve the equations A*X = B.
     info = LAPACKE_dgtsv(LAPACK_COL_MAJOR, n, nrhs, dl, d, du, b, ldb);
 
     // record the ending time
-    end_time = clock();
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+    double time_taken = (stop.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (stop.tv_nsec - start.tv_nsec)) * 1e-9;
 
     // checking for problems
     if (info > 0) {
@@ -79,7 +81,7 @@ int main(void) {
     for (i = 0; i < 3; i++) {
         printf("%f %f\n", x[i], b[i]);
     }
-    printf("            ...\n");
+    printf("\t...\n");
 
     for (i = N-2; i < N; i++) {
     printf("%f %f\n", x[i], b[i]);
@@ -92,11 +94,8 @@ int main(void) {
     }
     fclose(file);
 
-    // compute the elapsed time
-    elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
-
-    // print the elapsed time
-    printf("Elapsed time: %lf seconds.\n", elapsed_time);
+    // Print out elapsed time
+    printf("\nElapsed time: %lf seconds.\n", time_taken);
 
     return 0;
 }
