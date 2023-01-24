@@ -26,6 +26,8 @@ int main()
     // Define the dimensions of the matrices
     int m = dim, n = dim, k = dim, lda = dim, ldb = dim, ldc = dim;
     double alpha = 1.0, beta = 0.0;
+    struct timespec start, stop;
+
     printf("Dimension of matrix matrix multiplicaton: %d x %d.\n", m,n);
 
     // Allocate memory for the matrices
@@ -73,7 +75,7 @@ int main()
     }
 
     // Get starting time
-    clock_t tic = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     // perform matrix multiplication using dsymm()
     // For dynamic allocation
@@ -81,8 +83,9 @@ int main()
     
     // For static allocation
     cblas_dsymm(CblasRowMajor,CblasLeft ,CblasUpper,m,n,alpha, &A[0][0], lda, &B[0][0], ldb, beta, &C[0][0], ldc);
+    
     // Get end time
-    clock_t toc = clock();
+    clock_gettime(CLOCK_MONOTONIC, &stop);
 
     // print the result (only the first few elements)
     printf("\nPrinting out the first 5x5 elements of the result matrix:\n");
@@ -97,8 +100,9 @@ int main()
     }
     
     // Calculate the elapsed time in seconds
-    double elapsed_time = (double)(toc - tic) / CLOCKS_PER_SEC;
-    printf("\nMatrix multiplication took %lf seconds.\n", elapsed_time);
+    double time_taken = (stop.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (stop.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("\nMatrix multiplication took %lf seconds.\n", time_taken);
 
     // free the allocated memory if 
     // dynamically allocated
