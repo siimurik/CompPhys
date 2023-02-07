@@ -4,10 +4,20 @@
 ! In GNU Plot:
 !   $ plot 'out_2.csv' with lines
 !  =============================================================================
+! This code solves the general N-by-N system A x = b
+! where A is symmetric tridiagonal (N \geq 2). The off-
+! diagonal vector du and dl must be one element shorter 
+! than the diagonal vector diag. The form of A for the 
+! 4-by-4 case is shown below
+!    A = [   d1   du1  0    0
+!            dl1  d2   du2  0
+!            0    dl2  d3   du3
+!            0    0    dl3  d4  ]
+!=========================================================
 program dgtsv_solver
     implicit none
     integer          N, NRHS
-    parameter        ( N = 5001, NRHS = 1 )
+    parameter        ( N = 201, NRHS = 1 )
     integer          LDA, LDB, i
     parameter        ( LDA = N, LDB = N )
     integer          INFO
@@ -17,7 +27,10 @@ program dgtsv_solver
     double precision h
     double precision X(N)
     double precision start_time, end_time, elapsed_time
-
+	
+    ! Printing out the dimensions
+    write (*,1) N-1, N-1
+1   format ("Dimension of tridiagonal system:", i5," x", i5, ".",/)
     ! Initializing 
     h = 2.D0/float(N-1)
     do i = 1, N
@@ -74,6 +87,7 @@ program dgtsv_solver
 
     ! printing out the first and last 3 elements
     write(*,*)'DGTSV Program Results'
+    write(*,*)'	X	    B'
     do i = 1, 3
         write(*,'(6f12.5)') X(i), B(i,1)
     end do
