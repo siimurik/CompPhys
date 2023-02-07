@@ -1,6 +1,6 @@
 program main
 !==================================================================
-! Integration of a function using Gauss 8 and 16 points 
+! Integration of a function using Gauss 16 and 32 points 
 ! with doubling number of intervals 
 ! till  error = |I_16 - I_8| < eps
 !==================================================================
