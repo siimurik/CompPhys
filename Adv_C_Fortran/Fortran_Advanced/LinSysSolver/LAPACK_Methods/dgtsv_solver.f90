@@ -1,9 +1,9 @@
-!  =============================================================================
+!=============================================================================
 !   $ gfortran dgtsv_solver.f90 -o tri -llapack
 !   $ ./tri
 ! In GNU Plot:
 !   $ plot 'out_2.csv' with lines
-!  =============================================================================
+!=============================================================================
 ! This code solves the general N-by-N system A x = b
 ! where A is symmetric tridiagonal (N \geq 2). The off-
 ! diagonal vector du and dl must be one element shorter 
@@ -13,7 +13,7 @@
 !            dl1  d2   du2  0
 !            0    dl2  d3   du3
 !            0    0    dl3  d4  ]
-!=========================================================
+!=============================================================================
 program dgtsv_solver
     implicit none
     integer          N, NRHS
@@ -31,6 +31,7 @@ program dgtsv_solver
     ! Printing out the dimensions
     write (*,1) N-1, N-1
 1   format ("Dimension of tridiagonal system:", i5," x", i5, ".",/)
+
     ! Initializing 
     h = 2.D0/float(N-1)
     do i = 1, N
