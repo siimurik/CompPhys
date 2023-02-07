@@ -2,7 +2,7 @@ program main
 !==================================================================
 ! Integration of a function using Gauss 16 and 32 points 
 ! with doubling number of intervals 
-! till  error = |I_16 - I_8| < eps
+! till  error = |I_32 - I_16| < eps
 !==================================================================
     implicit none
     double precision    :: a, b, integral, eps
