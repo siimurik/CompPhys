@@ -4,6 +4,8 @@
     $ sudo apt install libgsl-dev
  Compile and execute with:
     $ gcc -o int qag_integrate.c -lm -lgsl
+ or on Mac
+    $ gcc qag_integrate.c -o int -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
     $ ./int
 ========================================================================
  To solve an integral numerically in C programming, you can use the GNU 
