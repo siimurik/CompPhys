@@ -1,3 +1,7 @@
+/*
+ Compile on Mac
+    $ gcc gsl_inv.c -o inv -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
+*/
 #include <stdio.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
