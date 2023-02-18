@@ -1,8 +1,10 @@
 /*
-========================================================
+================================================================================================
  This code needs the BLAS library to be installed:
     $ sudo apt install libblas-dev
-========================================================
+ On Mac:
+    $ brew install openblas
+================================================================================================
  Compile and execute
     $ gcc cblas_MatMat.c -o mat -lblas
     or
@@ -12,7 +14,19 @@
  optimizer as well. Use it together with 'time' like so:
     $ gcc cblas_MatMat.c -O2 -lblas
     $ time ./a.out
-========================================================
+================================================================================================
+ Compiling on Mac:
+ ---
+ To copile on Mac, the main C file need two header files
+ to be linked: "cblas.h" and "openblas_config.h".
+ Copying them to "/usr/local/include"  with the command
+    $ sudo cp /opt/homebrew/Cellar/openblas/0.3.21/include/cblas.h /usr/local/include
+    $ sudo cp /opt/homebrew/Cellar/openblas/0.3.21/include/openblas_config.h /usr/local/include
+ will allow you to to just use the command:
+    $ gcc -o mat cblas_MatMat.c -lblas
+ Otherwise you just have to use:
+    $ gcc -o mat cblas_MatMat.c -I/opt/homebrew/Cellar/openblas/0.3.21/include -lblas
+================================================================================================
 */
 #include <stdio.h>
 #include <stdlib.h>
