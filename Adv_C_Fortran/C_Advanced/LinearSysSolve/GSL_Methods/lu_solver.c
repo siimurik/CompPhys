@@ -2,6 +2,8 @@
 ========================================================
  Compile and execute with:
     $ gcc -o lus lu_solver.c -lgsl -lgslcblas
+ or
+    $ gcc lu_solver.c -o lus -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
     $ ./lus
 ========================================================
  This is a linear system solver code that uses GSL's 
