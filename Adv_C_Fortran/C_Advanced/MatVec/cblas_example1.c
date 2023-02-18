@@ -14,7 +14,7 @@ int main ( )
 
    double *a, *x, *y;
    double alpha, beta;
-   CBLAS_INT m, n, lda, incx, incy, i;
+   int m, n, lda, incx, incy, i;
 
    Layout = CblasColMajor;
    transa = CblasNoTrans;
