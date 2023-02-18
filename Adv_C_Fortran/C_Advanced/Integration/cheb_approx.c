@@ -2,6 +2,8 @@
 =======================================================
  Compile and execute with:
     $ gcc cheb_approx.c -o cheb -lgsl -lm
+ or on Mac:
+    $ gcc cheb_approx.c -o cheb -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
     $ ./cheb
 =======================================================
 */
