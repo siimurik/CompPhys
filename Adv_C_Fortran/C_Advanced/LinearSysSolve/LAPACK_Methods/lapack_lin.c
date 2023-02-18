@@ -1,7 +1,12 @@
 /*
+======================================================================================================
  Compile and execute with:
     $ gcc lapack_lin.c -o lap -llapacke
     $ ./lap
+---    
+ On Mac:   
+    $ gcc laplin.c -o lin -I/opt/homebrew/opt/lapack/include -L/opt/homebrew/opt/lapack/lib -llapacke
+======================================================================================================
 */
 
 #include <stdio.h>
