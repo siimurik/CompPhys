@@ -9,7 +9,7 @@
     $ gsl-config --cflags
     $ gsl-config --libs
  Using this, you can compile by using:
-    $ gcc laplin.c -o lin -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
+    $ gcc sym_tridiag.c -o sym -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
  ===========================================================
  This function solves the general N-by-N system A x = b
  where A is symmetric tridiagonal (N \geq 2). The off-
