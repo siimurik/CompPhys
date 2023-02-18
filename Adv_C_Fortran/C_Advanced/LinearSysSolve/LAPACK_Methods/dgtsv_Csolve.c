@@ -4,7 +4,9 @@
     $ gcc dgtsv_Csolve.c -o diag -llapacke
     $ ./diag
 ========================================================================
- On Mac:
+ On Mac, to know whta the flags are, use the command:
+    $ brew info lapack
+ Using the info from the output, you can compile with:
     $ gcc dgtsv_Csolve.c -o tri -L/opt/homebrew/opt/lapack/lib -llapacke
 ========================================================================
 */
