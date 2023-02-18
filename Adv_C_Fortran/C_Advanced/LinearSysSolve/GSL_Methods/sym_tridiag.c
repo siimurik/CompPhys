@@ -1,9 +1,16 @@
 /*
-=========================================================
+===========================================================
  Compile and execute with:
     $ gcc -o sym sym_tridiag.c -lgsl
     $ ./sym
-=========================================================
+===========================================================
+ On Mac, use these commands to find what are the '-I' flags
+ and '-L' libraries, use the commands:
+    $ gsl-config --cflags
+    $ gsl-config --libs
+ Using this, you can compile by using:
+    $ gcc laplin.c -o lin -I/opt/homebrew/Cellar/gsl/2.7.1/include -L/opt/homebrew/Cellar/gsl/2.7.1/lib -lgsl -lgslcblas
+ ===========================================================
  This function solves the general N-by-N system A x = b
  where A is symmetric tridiagonal (N \geq 2). The off-
  diagonal vector e must be one element shorter than the
@@ -13,7 +20,7 @@
             e0  d1  e1  0
             0   e1  d2  e2
             0   0   e2  d3  ]
-=========================================================
+===========================================================
 */
 #include <stdio.h>
 #include <time.h>
