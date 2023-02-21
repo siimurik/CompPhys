@@ -1,18 +1,21 @@
 !* Fortran source code is found in dgemm_example.f
 ! Compile and execute with:
 !   $ gfortran -o matmul_lapack matmul_lapack.f90 -L/usr/local/lib -llapack -lblas
+! Or
+!   $ ifx -o matmul_lapack matmul_lapack.f90 -llapack -lblas
 !   $ ./matmul_lapack
 !
 PROGRAM   MAIN
 
     IMPLICIT NONE
 
-    REAL(8)                 :: ALPHA, BETA, T1, T2, TIME
-    INTEGER(4)              :: I, J
-    INTEGER(4), PARAMETER   :: M=2000, K=200, N=1000
-    REAL(8), DIMENSION(M,K) :: A
-    REAL(8), DIMENSION(K,N) :: B
-    REAL(8), DIMENSION(M,N) :: C
+    DOUBLE PRECISION                 :: ALPHA, BETA, T1, T2, TIME
+    INTEGER              :: I, J
+    !INTEGER(4), PARAMETER   :: M=2000, K=200, N=1000
+    INTEGER, PARAMETER   :: M=5000, K=5000, N=5000
+    DOUBLE PRECISION, DIMENSION(M,K) :: A
+    DOUBLE PRECISION, DIMENSION(K,N) :: B
+    DOUBLE PRECISION, DIMENSION(M,N) :: C
 
     PRINT *, "This example computes real matrix C=alpha*A*B+beta*C"
     PRINT *, "using LAPACK package function dgemm, where A, B, and C"
@@ -29,23 +32,29 @@ PROGRAM   MAIN
 
     PRINT *, "Intializing matrix data"
     PRINT *, ""
-    DO I = 1, M
-    DO J = 1, K
-        A(I,J) = (I-1) * K + J
-    END DO
-    END DO
+    !DO I = 1, M
+    !    DO J = 1, K
+    !        A(I,J) = (I-1) * K + J
+    !    END DO
+    !END DO
 
-    DO I = 1, K
-    DO J = 1, N
-        B(I,J) = -((I-1) * N + J)
-    END DO
-    END DO
+    CALL RANDOM_NUMBER(A)
 
-    DO I = 1, M
-    DO J = 1, N
-        C(I,J) = 0.0
-    END DO
-    END DO
+    !DO I = 1, K
+    !    DO J = 1, N
+    !        B(I,J) = -((I-1) * N + J)
+    !    END DO
+    !END DO
+
+    CALL RANDOM_NUMBER(B)
+
+    !DO I = 1, M
+    !    DO J = 1, N
+    !        C(I,J) = 0.0
+    !    END DO
+    !END DO
+
+    C = 0.0
 
     PRINT *, "Computing matrix product using LAPACK DGEMM "
     PRINT *, "subroutine"
@@ -57,7 +66,7 @@ PROGRAM   MAIN
     WRITE (*,15) TIME
     PRINT *, ""
     
-15      FORMAT(/'Calculation time is ', e9.4, ' seconds.')
+15      FORMAT(/'Calculation time is ', F12.6, ' seconds.')
 
     PRINT *, "Top left corner of matrix A:"
     PRINT 20, ((A(I,J), J = 1,MIN(K,6)), I = 1,MIN(M,6))
@@ -67,7 +76,7 @@ PROGRAM   MAIN
     PRINT 20, ((B(I,J),J = 1,MIN(N,6)), I = 1,MIN(K,6))
     PRINT *, ""
 
-20      FORMAT(6(F12.0,1x))
+20      FORMAT(6(F12.6,1x))
 
     PRINT *, "Top left corner of matrix C:"
     PRINT 30, ((C(I,J), J = 1,MIN(N,6)), I = 1,MIN(M,6))
