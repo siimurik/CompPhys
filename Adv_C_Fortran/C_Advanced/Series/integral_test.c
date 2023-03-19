@@ -9,7 +9,7 @@
 #include <gsl/gsl_integration.h>
 #include <math.h>
 
-double f(double k, void* params) {
+double f(double x, void* params) {
     //return 1.0/log(x);
     return 1.0/tgamma(x+1); // tgamma(x+1) = x!
     // return gsl_pow_int(2, x) / tgamma(x+1.0); // should actually converge
