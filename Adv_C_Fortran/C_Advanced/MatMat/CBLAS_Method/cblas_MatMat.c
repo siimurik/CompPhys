@@ -1,5 +1,8 @@
 /*
 ================================================================================================
+ Best possible version at the moment with multithreading enabled
+    $ gcc -o mat cblas_MatMat.c -lopenblas -lpthread -lm
+================================================================================================
  This code needs the BLAS library to be installed:
     $ sudo apt install libblas-dev
  On Mac:
@@ -33,12 +36,17 @@
 #include <cblas.h>
 #include <time.h>
 
-#define dim 1000
+#define dim 5000
 int main()
 {
     // Define the dimensions of the matrices
     int m = dim, n = dim, k = dim;
     struct timespec start, stop;
+
+    int num_threads = 8; // Specify the number of threads
+
+    // Set the number of threads for OpenBLAS
+    openblas_set_num_threads(num_threads);
 
     printf("Dimension of matrix matrix multiplicaton: %d x %d.\n", m,n);
 
