@@ -2,6 +2,10 @@
 ==============================================================================
 Best possible command for fast results:
     $ gcc -o gsl_openblas gsl_matmul.c -lgsl -lopenblas -lpthread -lm
+    $ ./gsl_openblas   
+    > Dimension of matrices: 5000 x 5000.
+    > Matrix multiplication took 1.772345 seconds.
+------------------------------------------------------------------------------    
 Help with compiling commands
     $ gcc -I/usr/include/gsl -lgsl -lgslcblas -lm gsl_matmul.c -o gsl_matmul
     $ ./a.out
