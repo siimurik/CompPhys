@@ -44,7 +44,7 @@ main (void)
     gsl_matrix_view C = gsl_matrix_view_array(cq, n, n);
 
     // Set the number of threads for OpenBLAS
-    // Actually not even necessary to explicidly write
+    // Actually not even necessary to explicitly write
     //openblas_set_num_threads(8); // Set the desired number of threads
 
     /* Compute C = A B */
