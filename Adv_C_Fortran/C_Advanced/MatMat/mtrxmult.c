@@ -1,11 +1,17 @@
 /*
  Compile and execute with:
-    $ gcc mtrxmult.c -o mtrx
+    $ gcc mtrxmult.c -o mtrx -fopenmp -lm
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+#include <omp.h>
+#include <string.h>
+
+// Define the tile size for inner tiling
+#define ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE 64
 
 // Define a custom matrix structure
 typedef struct {
@@ -38,6 +44,10 @@ Matrix  matEmpty(int rows, int cols);
 Matrix  matZeros(int rows, int cols);
 void    printMatrix(Matrix mat);
 Matrix  matMul(const Matrix *A, const Matrix *B);
+Matrix  matCreate(int rows, int cols, const double *data);
+void matmulImplRowColParallelInnerTiling(const Matrix *left,
+                                         const Matrix *right,
+                                         Matrix *result);
 
 Vector  vecRand(int size);
 void    printVector(Vector vec);
@@ -46,34 +56,93 @@ void    vecFree(Vector vec);
 double  vecDot(const Vector *v1, const Vector *v2);
 Vector  vecAdd(const Vector *v1, const Vector *v2);
 Matrix  matMulFromVectors(const Vector *v1, const Vector *v2);
+Vector  vecCreate(int size, const double *data);
 
-MatrixVector matVecZeros(int rows, int cols);
-MatrixVector matVecRand(int rows, int cols);
-void         matVecFree(MatrixVector matVec);
+MatrixVector matvecZeros(int rows, int cols);
+MatrixVector matvecRand(int rows, int cols);
+void         matvecFree(MatrixVector matvec);
 MatrixVector matMulVector(const MatrixVector *A, const MatrixVector *B);
-void         printMatrixVector(MatrixVector matVec);
-// For deallocating use vecFree()
+void         printMatrixVector(MatrixVector matvec);
+MatrixVector matvecCreate(int rows, int cols, const double *data);
+void         matvecMatmulParallel(const MatrixVector *left, 
+                                  const MatrixVector *right, 
+                                  MatrixVector *result);
 
 //=========================================================================
 int main() {
     struct timespec start, stop;
-
+    int nRows = 2000; int nCols = 2000;
     // Create a matrix
-    Matrix matA = matRand(4, 5); // Replace with your desired dimensions
-    Matrix matB = matRand(5, 4);
-    //Matrix matC = matZeros(4,4);
+    /*
+    Matrix matA = matRand(nRows, nCols); // Replace with your desired dimensions
+    Matrix matB = matRand(nCols, nRows);
+    Matrix matC = matZeros(nRows,nRows);
+    printf("Printing random matrices using matRand()\n");
+    printMatrix(matA);
+    printMatrix(matB);
+    */
+/*
+    // Insert matrix values manually into a data vector
+/*
+    const double dataA[] = {
+        0.154930,   0.590628,   0.312663,   0.363340,   0.848290,
+        0.682167,   0.945112,   0.116302,   0.902817,   0.762891,
+        0.270557,   0.548013,   0.847965,   0.776792,   0.093645,
+        0.330188,   0.103298,   0.853670,   0.069543,   0.752094,
+        0.440037,   0.519449,   0.358802,   0.617297,   0.088619
+    }; 
 
+    const double dataB[] = {
+        2.8165e-01,   5.7706e-01,   3.4104e-01,   5.7045e-01,   6.4831e-01,
+        7.4746e-01,   8.6455e-03,   2.2676e-01,   3.3502e-02,   8.8636e-01,
+        6.2228e-01,   1.3133e-01,   8.9364e-01,   3.0900e-01,   5.1634e-01,
+        7.0856e-01,   3.2182e-02,   7.4357e-01,   2.1385e-01,   1.3731e-01,
+        1.5752e-02,   1.4248e-01,   5.1852e-01,   7.8274e-01,   3.1304e-01
+    };
+
+    Matrix A = matCreate(5, 5, dataA);
+    Matrix B = matCreate(5, 5, dataB);
+
+    printf("Manually inserted matrix values:\n");
+    printMatrix(A);
+    printMatrix(B);
+*/
+    /*
     // Create a vector
     Vector vec1 = vecRand(5);
     Vector vec2 = vecRand(4);
     //Vector vec3 = vecZeros(5, 4);
+    printf("\nPrinting random vectors using vecRand()\n");
+    printVector(vec1);
+    printVector(vec2);
+    */
 
+/*
+    const double vectorData[] = {1.0, 2.0, 3.0, 4.0, 5.0};
+    Vector vec = vecCreate(5, vectorData);
+    printf("\nManually inserted vector values:\n");
+    printVector(vec);
+*/
+    
     // Create a special matrix, that is 1D
-    MatrixVector matVecA = matVecRand(6, 6);
-    MatrixVector matVecB = matVecRand(6, 6);
-    printMatrixVector(matVecA);
-    printMatrixVector(matVecB);
+    MatrixVector matvecA = matvecRand(nRows, nCols);
+    MatrixVector matvecB = matvecRand(nCols, nRows);
+    MatrixVector matvecC = matvecZeros(nRows, nCols);
+    printf("\nPrinting random vectors using matvecRand()\n");
+    printMatrixVector(matvecA);
+    printMatrixVector(matvecB);
+    
+/*
+    double matvecData[] = {
+        0.11, 0.12, 0.13,
+        0.21, 0.22, 0.23,
+        0.31, 0.32, 0.33
+    };
 
+    MatrixVector matvec = matvecCreate(3, 3, matvecData);
+    printf("\nManually inserted matrix values:\n");
+    printMatrixVector(matvec);
+*/
     // Populate the matrix with values
     /*
     for (int i = 0; i < mat.rows; i++) {
@@ -87,19 +156,27 @@ int main() {
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     // Perform matrix multiplication
-    Matrix       matC         = matMul(&matA, &matB);
-    Matrix       matResult    = matMulFromVectors(&vec1, &vec2);
+    //Matrix       matC         = matMul(&matA, &matB);
+    
+    // Call the matrix multiplication function
+    //matmulImplRowColParallelInnerTiling(&matA, &matB, &matC);
+    
+    //Matrix       matResult    = matMulFromVectors(&vec1, &vec2);
+    //MatrixVector matvecResult = matMulVector(&matvecA, &matvecB);
 
-    MatrixVector matVecResult = matMulVector(&matVecA, &matVecB);
+    // Call the matrix multiplication function
+    matvecMatmulParallel(&matvecA, &matvecB, &matvecC);
+
 
     // Get end time
     clock_gettime(CLOCK_MONOTONIC, &stop);
 
 
     // Print the matrix
-    printMatrix(matC);
-    printMatrix(matResult);
-    printMatrixVector(matVecResult);
+    printf("\nResult matrix:\n");
+    //printMatrix(matC);
+    //printMatrix(matResult);
+    printMatrixVector(matvecC);
 
     // Calculate the elapsed time in seconds
     double time_taken = (stop.tv_sec - start.tv_sec) * 1e9;
@@ -107,19 +184,20 @@ int main() {
     printf("\nMatrix multiplication took %.3e seconds.\n", time_taken);
 
     // Clean up memory
-    
+    /*
     matFree(matA);
     matFree(matB);
     matFree(matC);
-
+    */
+    /*
     vecFree(vec1);
     vecFree(vec2);
     matFree(matResult);
+    */
+    matvecFree(matvecA);
+    matvecFree(matvecB);
+    matvecFree(matvecC);
     
-    matVecFree(matVecA);
-    matVecFree(matVecB);
-    matVecFree(matVecResult);
-
     return 0;
 }
 //=========================================================================
@@ -377,6 +455,71 @@ Matrix matMul(const Matrix *A, const Matrix *B) {
 
     return result;
 }
+
+Matrix matCreate(int rows, int cols, const double *data) {
+    Matrix mat;
+    mat.rows = rows;
+    mat.cols = cols;
+
+    mat.data = (double **)malloc(rows * sizeof(double *));
+    if (mat.data == NULL) {
+        fprintf(stderr, "Memory allocation failed for matrix rows.\n");
+        mat.rows = 0; // Reset rows in case of failure
+        return mat;
+    }
+
+    for (int i = 0; i < rows; i++) {
+        mat.data[i] = (double *)malloc(cols * sizeof(double));
+        if (mat.data[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed for matrix columns.\n");
+
+            // Clean up memory allocated so far
+            for (int j = 0; j < i; j++) {
+                free(mat.data[j]);
+            }
+            free(mat.data);
+
+            mat.rows = 0; // Reset rows in case of failure
+            return mat;
+        }
+
+        for (int j = 0; j < cols; j++) {
+            mat.data[i][j] = data[i * cols + j];
+        }
+    }
+
+    return mat;
+}
+
+// Function for matrix multiplication with OpenMP parallelization and tiling
+void matmulImplRowColParallelInnerTiling(const Matrix *left,
+                                         const Matrix *right,
+                                         Matrix *result) {
+// Matrix multiplication with 5000x5000 matrices
+// "> Matrix multiplication took 1.762e+02 seconds."
+// Not bad...  
+#pragma omp parallel for shared(result, left, right) default(none) \
+    collapse(2) num_threads(8)
+    for (int rowTile = 0; rowTile < left->rows; rowTile += 256) {
+        for (int columnTile = 0; columnTile < right->cols; columnTile += 256) {
+            for (int innerTile = 0; innerTile < left->cols; innerTile += ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE) {
+                for (int row = rowTile; row < rowTile + 256 && row < left->rows; row++) {
+                    int innerTileEnd = innerTile + ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE;
+                    if (innerTileEnd > left->cols) {
+                        innerTileEnd = left->cols;
+                    }
+                    for (int inner = innerTile; inner < innerTileEnd; inner++) {
+                        for (int col = columnTile; col < columnTile + 256 && col < right->cols; col++) {
+                            result->data[row][col] +=
+                                left->data[row][inner] * right->data[inner][col];
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 //============================================================
 Vector vecRand(int size) {
     Vector vec;
@@ -462,36 +605,55 @@ Matrix matMulFromVectors(const Vector *v1, const Vector *v2) {
 
     return result;
 }
-//====================================================================================
-// Function to create a new MatrixVector and initialize with zeros
-MatrixVector matVecZeros(int rows, int cols) {
-    MatrixVector matVec;
-    matVec.rows = rows;
-    matVec.cols = cols;
-    matVec.data = (double *)calloc(rows * cols, sizeof(double));
 
-    if (matVec.data == NULL) {
-        fprintf(stderr, "Memory allocation failed for MatrixVector.\n");
-        matVec.rows = 0; // Reset rows in case of failure
+Vector vecCreate(int size, const double *data) {
+    Vector vec;
+    vec.size = size;
+
+    vec.data = (double *)malloc(size * sizeof(double));
+    if (vec.data == NULL) {
+        fprintf(stderr, "Memory allocation failed for vector.\n");
+        vec.size = 0; // Reset size in case of failure
+        return vec;
     }
 
-    return matVec;
+    for (int i = 0; i < size; i++) {
+        vec.data[i] = data[i];
+    }
+
+    return vec;
+}
+
+//====================================================================================
+// Function to create a new MatrixVector and initialize with zeros
+MatrixVector matvecZeros(int rows, int cols) {
+    MatrixVector matvec;
+    matvec.rows = rows;
+    matvec.cols = cols;
+    matvec.data = (double *)calloc(rows * cols, sizeof(double));
+
+    if (matvec.data == NULL) {
+        fprintf(stderr, "Memory allocation failed for MatrixVector.\n");
+        matvec.rows = 0; // Reset rows in case of failure
+    }
+
+    return matvec;
 }
 
 // Function to generate a new MatrixVector with random values
-MatrixVector matVecRand(int rows, int cols) {
-    MatrixVector matVec = matVecZeros(rows, cols);
+MatrixVector matvecRand(int rows, int cols) {
+    MatrixVector matvec = matvecZeros(rows, cols);
 
     for (int i = 0; i < rows * cols; i++) {
-        matVec.data[i] = rand_range(0.0, 1.0);
+        matvec.data[i] = rand_range(0.0, 1.0);
     }
 
-    return matVec;
+    return matvec;
 }
 
 // Function to free the memory allocated for MatrixVector
-void matVecFree(MatrixVector matVec) {
-    free(matVec.data);
+void matvecFree(MatrixVector matvec) {
+    free(matvec.data);
 }
 
 // Function to perform matrix multiplication using MatrixVector
@@ -501,7 +663,7 @@ MatrixVector matMulVector(const MatrixVector *A, const MatrixVector *B) {
         exit(EXIT_FAILURE);
     }
 
-    MatrixVector result = matVecZeros(A->rows, B->cols);
+    MatrixVector result = matvecZeros(A->rows, B->cols);
 
     for (int i = 0; i < A->rows; i++) {
         for (int j = 0; j < B->cols; j++) {
@@ -518,27 +680,27 @@ MatrixVector matMulVector(const MatrixVector *A, const MatrixVector *B) {
 
 
 // Function to print a MatrixVector
-void printMatrixVector(MatrixVector matVec) {
+void printMatrixVector(MatrixVector matvec) {
     int max_print_size = 6;
 
     printf("[\n");
 
-    if (matVec.rows <= max_print_size) {
-        for (int i = 0; i < matVec.rows; i++) {
+    if (matvec.rows <= max_print_size) {
+        for (int i = 0; i < matvec.rows; i++) {
             printf("  [");
-            for (int j = 0; j < matVec.cols; j++) {
-                printf("%f", matVec.data[i * matVec.cols + j]);
-                if (j < matVec.cols - 1) printf(", ");
+            for (int j = 0; j < matvec.cols; j++) {
+                printf("%f", matvec.data[i * matvec.cols + j]);
+                if (j < matvec.cols - 1) printf(", ");
             }
             printf("]");
-            if (i < matVec.rows - 1) printf(",\n");
+            if (i < matvec.rows - 1) printf(",\n");
         }
     } else {
         for (int i = 0; i < max_print_size; i++) {
             printf("  [");
             for (int j = 0; j < max_print_size; j++) {
-                printf("%f", matVec.data[i * matVec.cols + j]);
-                if (j < matVec.cols - 1) printf(", ");
+                printf("%f", matvec.data[i * matvec.cols + j]);
+                if (j < matvec.cols - 1) printf(", ");
             }
             printf(" ...");
             printf("]");
@@ -551,3 +713,56 @@ void printMatrixVector(MatrixVector matVec) {
 
     printf("\n]\n");
 }
+
+MatrixVector matvecCreate(int rows, int cols, const double *data) {
+    MatrixVector matvec;
+    matvec.rows = rows;
+    matvec.cols = cols;
+
+    matvec.data = (double *)malloc(rows * cols * sizeof(double));
+    if (matvec.data == NULL) {
+        fprintf(stderr, "Memory allocation failed for matrix vector.\n");
+        matvec.rows = 0; // Reset rows in case of failure
+        matvec.cols = 0; // Reset cols in case of failure
+        return matvec;
+    }
+
+    for (int i = 0; i < rows * cols; i++) {
+        matvec.data[i] = data[i];
+    }
+
+    return matvec;
+}
+
+// Matrix multiplication with 5000x5000 matrices
+// "> Matrix multiplication took 1.732e+02 seconds."
+// Not bad...  at all...
+void matvecMatmulParallel(const MatrixVector *left, const MatrixVector *right, MatrixVector *result) {
+    // Parallelize the matrix multiplication loop using OpenMP
+    #pragma omp parallel for shared(result, left, right) default(none) \
+        collapse(2) num_threads(8)
+    // Divide the computation into tiles for row, column, and inner dimension
+    for (int rowTile = 0; rowTile < left->rows; rowTile += 256) {
+        for (int columnTile = 0; columnTile < right->cols; columnTile += 256) {
+            for (int innerTile = 0; innerTile < left->cols; innerTile += ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE) {
+                // Perform matrix multiplication within the specified tiles
+                for (int row = rowTile; row < rowTile + 256 && row < left->rows; row++) {
+                    // Determine the end of the inner tile
+                    int innerTileEnd = innerTile + ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE;
+                    if (innerTileEnd > left->cols) {
+                        innerTileEnd = left->cols;
+                    }
+                    // Perform the inner loop of matrix multiplication
+                    for (int inner = innerTile; inner < innerTileEnd; inner++) {
+                        for (int col = columnTile; col < columnTile + 256 && col < right->cols; col++) {
+                            // Accumulate the result by multiplying elements and summing up
+                            result->data[row * result->cols + col] +=
+                                left->data[row * left->cols + inner] * right->data[inner * right->cols + col];
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
