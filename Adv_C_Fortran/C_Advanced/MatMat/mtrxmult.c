@@ -71,7 +71,7 @@ void         matvecMatmulParallel(const MatrixVector *left,
 //=========================================================================
 int main() {
     struct timespec start, stop;
-    int nRows = 2000; int nCols = 2000;
+    int nRows = 1024; int nCols = 1024;
     // Create a matrix
     /*
     Matrix matA = matRand(nRows, nCols); // Replace with your desired dimensions
@@ -84,7 +84,7 @@ int main() {
 /*
     // Insert matrix values manually into a data vector
 /*
-    const double dataA[] = {
+    static double dataA[] = {
         0.154930,   0.590628,   0.312663,   0.363340,   0.848290,
         0.682167,   0.945112,   0.116302,   0.902817,   0.762891,
         0.270557,   0.548013,   0.847965,   0.776792,   0.093645,
@@ -92,7 +92,7 @@ int main() {
         0.440037,   0.519449,   0.358802,   0.617297,   0.088619
     }; 
 
-    const double dataB[] = {
+    static double dataB[] = {
         2.8165e-01,   5.7706e-01,   3.4104e-01,   5.7045e-01,   6.4831e-01,
         7.4746e-01,   8.6455e-03,   2.2676e-01,   3.3502e-02,   8.8636e-01,
         6.2228e-01,   1.3133e-01,   8.9364e-01,   3.0900e-01,   5.1634e-01,
