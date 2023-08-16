@@ -12,6 +12,8 @@
 int main() {
     int n = dim; // matrix is 3x3
     int lda = n;
+
+    printf("Initial matrix:\n");
     //double A[9] = {3, -1, 2, -3, 3, -1, 6, 0, 4};
     double *A = (double *)malloc(n * n * sizeof(double)); // Input matrix (column-major order)
     double initValues[dim][dim] = {
@@ -53,6 +55,7 @@ int main() {
     }
 
     // Calculate the determinant
+    /*
     double determinant = 1.0;
     for (int i = 0; i < n; i++) {
         determinant *= A[i * n + i];
@@ -64,6 +67,18 @@ int main() {
         }
     }
     determinant *= sign;
+    */
+
+    //Link: https://stackoverflow.com/questions/47315471/compute-determinant-from-lu-decomposition-in-lapack
+    int j; double detp = 1.0;
+    for(j = 0; j < n; j++){
+        if(j+1 != ipiv[j]){
+            // j+1 : following feedback of ead : ipiv is from Fortran, 
+            //                                   hence starts at 1.
+            // hey ! This is a transpose !
+            detp=-detp;
+        }
+    }
 
     // Print the result
     printf("\nDeterminant: %lf\n", determinant);
