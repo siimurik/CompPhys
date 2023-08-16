@@ -1,3 +1,8 @@
+/*
+ Compile and execute with:
+    $ gcc mtrxmult.c -o mtrx
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -47,14 +52,16 @@ MatrixVector matVecRand(int rows, int cols);
 void         matVecFree(MatrixVector matVec);
 MatrixVector matMulVector(const MatrixVector *A, const MatrixVector *B);
 void         printMatrixVector(MatrixVector matVec);
-// 
 // For deallocating use vecFree()
 
+//=========================================================================
 int main() {
+    struct timespec start, stop;
+
     // Create a matrix
     Matrix matA = matRand(4, 5); // Replace with your desired dimensions
     Matrix matB = matRand(5, 4);
-    Matrix matC = matZeros(4,4);
+    //Matrix matC = matZeros(4,4);
 
     // Create a vector
     Vector vec1 = vecRand(5);
@@ -62,8 +69,8 @@ int main() {
     //Vector vec3 = vecZeros(5, 4);
 
     // Create a special matrix, that is 1D
-    MatrixVector matVecA = matVecRand(3, 3);
-    MatrixVector matVecB = matVecRand(3, 3);
+    MatrixVector matVecA = matVecRand(6, 6);
+    MatrixVector matVecB = matVecRand(6, 6);
     printMatrixVector(matVecA);
     printMatrixVector(matVecB);
 
@@ -76,18 +83,31 @@ int main() {
     }
     */
     
+    // Get starting time
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
     // Perform matrix multiplication
-    matC                      = matMul(&matA, &matB);
+    Matrix       matC         = matMul(&matA, &matB);
     Matrix       matResult    = matMulFromVectors(&vec1, &vec2);
+
     MatrixVector matVecResult = matMulVector(&matVecA, &matVecB);
 
+    // Get end time
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+
+
     // Print the matrix
-    //printMatrix(matC);
-    //printMatrix(matResult);
+    printMatrix(matC);
+    printMatrix(matResult);
     printMatrixVector(matVecResult);
 
+    // Calculate the elapsed time in seconds
+    double time_taken = (stop.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (stop.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("\nMatrix multiplication took %.3e seconds.\n", time_taken);
 
     // Clean up memory
+    
     matFree(matA);
     matFree(matB);
     matFree(matC);
@@ -95,14 +115,14 @@ int main() {
     vecFree(vec1);
     vecFree(vec2);
     matFree(matResult);
-
+    
     matVecFree(matVecA);
     matVecFree(matVecB);
     matVecFree(matVecResult);
 
     return 0;
 }
-
+//=========================================================================
 
 // Generate a random floating-point number within the given range.
 double rand_range(double min, double max) {
@@ -516,11 +536,11 @@ void printMatrixVector(MatrixVector matVec) {
     } else {
         for (int i = 0; i < max_print_size; i++) {
             printf("  [");
-            for (int j = 0; j < matVec.cols; j++) {
+            for (int j = 0; j < max_print_size; j++) {
                 printf("%f", matVec.data[i * matVec.cols + j]);
                 if (j < matVec.cols - 1) printf(", ");
             }
-            printf(", ...");
+            printf(" ...");
             printf("]");
             if (i < max_print_size - 1) printf(",\n");
         }
