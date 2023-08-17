@@ -1,6 +1,6 @@
 /*
  Compile and execute with:
-    $ gcc mtrxmult.c -o mtrx -fopenmp -lm
+    $ gcc mtrxmult.c -o mtrx -fopenmp -lblas -lm
 */
 
 #include <stdio.h>
@@ -9,9 +9,13 @@
 #include <math.h>
 #include <omp.h>
 #include <string.h>
+#include <cblas.h>
 
 // Define the tile size for inner tiling
 #define ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE 64
+
+// Define matrix dimesions
+#define dim 1024
 
 // Define a custom matrix structure
 typedef struct {
@@ -67,11 +71,12 @@ MatrixVector matvecCreate(int rows, int cols, const double *data);
 void         matvecMatmulParallel(const MatrixVector *left, 
                                   const MatrixVector *right, 
                                   MatrixVector *result);
+void matmul(const MatrixVector *A, const MatrixVector *B, MatrixVector *C);
 
 //=========================================================================
 int main() {
     struct timespec start, stop;
-    int nRows = 1024; int nCols = 1024;
+    int nRows = dim; int nCols = dim;
     // Create a matrix
     /*
     Matrix matA = matRand(nRows, nCols); // Replace with your desired dimensions
@@ -162,11 +167,11 @@ int main() {
     //matmulImplRowColParallelInnerTiling(&matA, &matB, &matC);
     
     //Matrix       matResult    = matMulFromVectors(&vec1, &vec2);
-    //MatrixVector matvecResult = matMulVector(&matvecA, &matvecB);
+    //matvecC = matMulVector(&matvecA, &matvecB);
 
     // Call the matrix multiplication function
-    matvecMatmulParallel(&matvecA, &matvecB, &matvecC);
-
+    //matvecMatmulParallel(&matvecA, &matvecB, &matvecC);   // Uses the OpenMP parallel computing capabilities
+    matmul(&matvecA, &matvecB, &matvecC);                   // Uses the optimised BLAS library function DGEMM()
 
     // Get end time
     clock_gettime(CLOCK_MONOTONIC, &stop);
@@ -766,3 +771,15 @@ void matvecMatmulParallel(const MatrixVector *left, const MatrixVector *right, M
     }
 }
 
+void matmul(const MatrixVector *A, const MatrixVector *B, MatrixVector *C) {
+    // Check if matrix dimensions are compatible for multiplication
+    if (A->cols != B->rows || A->rows != C->rows || B->cols != C->cols) {
+        fprintf(stderr, "ERROR: Incorrect matrix sizes for multiplication!\n");
+        return;
+    }
+
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                A->rows, B->cols, A->cols,
+                1.0, A->data, A->cols, B->data, B->cols,
+                0.0, C->data, C->cols);
+}
