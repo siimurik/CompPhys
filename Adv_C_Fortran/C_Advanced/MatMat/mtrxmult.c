@@ -1,6 +1,8 @@
 /*
  Compile and execute with:
     $ gcc mtrxmult.c -o mtrx -fopenmp -lblas -lm
+ On Mac:
+    $ clang -Xclang -fopenmp -L/opt/homebrew/opt/libomp/lib -I/opt/homebrew/opt/libomp/include -lomp mtrxmult.c -o mat -lblas -lm
 */
 
 #include <stdio.h>
