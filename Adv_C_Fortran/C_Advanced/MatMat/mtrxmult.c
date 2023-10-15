@@ -88,7 +88,7 @@ int main() {
     printMatrix(matA);
     printMatrix(matB);
     */
-/*
+
     // Insert matrix values manually into a data vector
 /*
     static double dataA[] = {
