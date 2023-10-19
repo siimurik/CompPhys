@@ -1,6 +1,6 @@
 /*
  Compile and execute with:
-    $ gcc dgesv_Csolve.c -o dg -llapacke
+    $ gcc dgesv_Csolve.c -o dgesv -llapacke
     $ ./dg
 */
 #include <stdlib.h>
