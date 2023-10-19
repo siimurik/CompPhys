@@ -1,4 +1,6 @@
 /* Calling DGELS using row-major order 
+ Prerequisites:
+    > sudo apt-get install liblapack-dev liblapack-doc liblapack-pic liblapack3 liblapack-test  liblapacke liblapacke-dev
  Compile and excute with:
     > gcc eigen_val_vec.c -o eigen -llapacke
     > ./eigen
