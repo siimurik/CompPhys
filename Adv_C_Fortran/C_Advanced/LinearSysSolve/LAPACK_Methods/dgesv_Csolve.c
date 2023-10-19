@@ -1,6 +1,6 @@
 /*
  Compile and execute with:
-    $ gcc dgtsv_syssolve.c -o dg -llapacke
+    $ gcc dgesv_Csolve.c -o dg -llapacke
     $ ./dg
 */
 #include <stdlib.h>
