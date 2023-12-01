@@ -1,51 +1,38 @@
-import csv
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv("colors.csv",header = None)
-#print('\n Initial data\n',data.head())
-origin = 'lower'
-dim = len(data)
-T = data.drop(data.columns[[dim]], axis=1)
-#print('\n Initial data\n',T.head())
-#print(x_feat.head())
-#print(x_feat.tail())
-Z = T.values
-#print(Z)
-N = len(T)
-#print(nx)
-"""
-px = 1/72# pixel in inches
-plt.subplots(figsize=(660*px, 678*px)) #width, height. These numbers give exactly 512x512 pixel image, therefore containing no aliasing(?) errors, painstakingly adjusted through much trial and error
+# Replace 'your_file.csv' with the actual path to your CSV file
+file_path = 'colsRevamp.csv'
 
-#fig = plt.figure(figsize=(5,5), dpi = 128) #lim dpi = ca 156 kanti
-#for now it is in grayscale, can change
-colbar = plt.imshow(Z, cmap='gray', interpolation='none', extent=[0, N, 0, N], origin='lower', aspect='auto')
-#plt.clim(-1, 1) #fixes limits of color bar
-#cmap variants: Greys, hot, terrain, rainbow, cividis, viridis, gray. last one most similar to lecture example
-#fig.colorbar(colbar)
-plt.axis('off')
+# Use numpy.genfromtxt to load CSV values into a NumPy matrix
+dataRaw = np.genfromtxt(file_path, delimiter=',', filling_values=np.nan)    # shape 512x513
+data = dataRaw[:, :len(dataRaw)]  # Removing last column bc it is full of 'nan' values; 
+print(data.shape)
+print(data)
+N = data.shape[0]
 
-plt.savefig('my_fig.png', dpi=72, bbox_inches='tight') #should save the image in working folder, with small borders that need to be cropped out manually
+# Some magic numbers for the plot to display correctly
+px = 1 / 72  # pixel in inches
+# Create a figure with one row and two columns
+fig, axs = plt.subplots(1, 2, figsize=(1320 * px, 678 * px))  # width, height for each plot
 
-plt.show()
-"""
-
-# Creating 2-D grid of features
-feature_x = np.linspace(0, 1, N)
-feature_y = np.linspace(0, 1, N)
-#print(feature_x)
-
-# Creating 2-D grid of features
-[X, Y] = np.meshgrid(feature_x, feature_y)
-
-fig, ax = plt.subplots(1, 1)
-# plots filled contour plot
-ax.contourf(X, Y, Z)
-  
-ax.set_title('Filled Contour Plot')
-ax.set_xlabel('feature_x')
-ax.set_ylabel('feature_y')
-  
+#############################################################################################
+# Plot the first image on the left
+axs[0].imshow(data, interpolation='none', extent=[0, N, 0, N], origin='lower', aspect='auto')
+axs[0].axis('off')
+axs[0].set_title('Filled Contour Plot')
+axs[0].set_xlabel('x, [0,1]')
+axs[0].set_ylabel('y, [0,1]')
+#############################################################################################
+# Plot the second image on the right
+fourier = abs(np.fft.fftshift(np.fft.fft2(data))) ** 2
+#print(data)
+axs[1].imshow(np.log(fourier), cmap='gray')
+#axs[1].imshow(F, cmap='gray')
+axs[1].set_title('Plot of $\log{ ( | fftshift( fft2(z) ) |^2 } )$')
+axs[1].set_xlabel('x, [0,1]')
+axs[1].set_ylabel('y, [0,1]')
+axs[1].axis('off')
+#############################################################################################
+fig.tight_layout()
 plt.show()
