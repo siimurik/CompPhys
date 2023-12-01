@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Replace 'your_file.csv' with the actual path to your CSV file
-file_path = 'colsRevamp.csv'
+#file_path = 'colsRevamp.csv'
+file_path = 'coloursF.csv'
 
 # Use numpy.genfromtxt to load CSV values into a NumPy matrix
 dataRaw = np.genfromtxt(file_path, delimiter=',', filling_values=np.nan)    # shape 512x513
