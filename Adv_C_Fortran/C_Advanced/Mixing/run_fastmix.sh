@@ -1,8 +1,9 @@
 #!/bin/bash
+
 echo Compiling the main code.
-gcc mixRevamp.c -o mixR -lm -lfftw3
+gcc mixFast.c -o mixF -lm
 echo Executing
-./mixR
+./mixF
 echo Plotting with Python
 python3 plot_mixC.py 
-rm mixR colsRevamp.csv
+rm mixF coloursF.csv

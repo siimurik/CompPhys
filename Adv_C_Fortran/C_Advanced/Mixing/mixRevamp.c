@@ -5,7 +5,7 @@
 ===============================================================================
  Complile and execute with:
     $ gcc mixRevamp.c -o mixR -lm -lfftw3
-    $ ./mix2
+    $ ./mixR
 ===============================================================================
  How to set up and compile on a Mac:
     $ brew install fftw
@@ -106,7 +106,7 @@ int main() {
     // Get end time
     clock_gettime(CLOCK_MONOTONIC, &stop);
 
-    // Print matrix after 11 diffusion iterations
+    // Print matrix after numCycles diffusion iterations
     printf("c1 = ");
     printMatrix(c1);
 
