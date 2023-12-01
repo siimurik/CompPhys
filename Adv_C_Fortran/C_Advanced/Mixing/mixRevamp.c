@@ -26,7 +26,7 @@ Documentation:
 
  Second important feature is the intoduction is the addition of structs. These
  help eliminate boilerplate and introduce matrices that are dynamically allocated.
- This also means that N is no longer capped at '512' and can go to giher powers of
+ This also means that N is no longer capped at '512' and can go to higher powers of
  2, although though the plots don't necessarily require it. Nevertheless, the code 
  does not cause any memory leaks anymore.
 
