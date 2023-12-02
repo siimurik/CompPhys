@@ -217,36 +217,49 @@ MatrixVector iterate(int no_of_times, MatrixVector *matrix) {
     =======================================================*/
     int k, i, j;
     double a = 200;
+
+    // Initialize a new matrix to store intermediate results
     MatrixVector c = matvecZeros(matrix->rows, matrix->rows);
 
     int rows = matrix->rows; 
     int cols = matrix->cols; 
 
+    // Iterate for the specified number of times
     for (k = 0; k < no_of_times; k++) {
+        // Perform mixing based on the parity of the iteration
         for (i = 0; i < N; i++) {
             for (j = 0; j < N; j++) {
-                if (k % 2 == 0) { //even => mixes one way, odd => another way
+                if (k % 2 == 0) { // even => mixes one way, odd => another way
                     c.data[i*rows + j] = matrix->data[i*rows + ((j + (int)(a * cos(i * pi * 2 / N))) & N - 1)];
                 } else {
                     c.data[i*rows + j] = matrix->data[((i + (int)(a * cos(j * pi * 2 / N))) & N - 1)*rows + j];
                 }
             }
         }
+
+        // Perform diffusion on the intermediate matrix
         c = p_diffuse(&c, k % 2 == 0);
-        for (i = 0; i < N; i++) { //put elements of new matrix into the old one, continue changing matrix c.
+
+        // Copy elements from the intermediate matrix back to the original matrix
+        for (i = 0; i < N; i++) {
             for (j = 0; j < N; j++) {
                 matrix->data[i*rows + j] = c.data[i*rows + j];
             }
         }
     }
-    for (i = 0; i < N; i++) { //put elements of new matrix into the old one, continue changing matrix c.
-        for (j = 0; j < N; j++) {
-            c.data[i*rows + j] = matrix->data[i*rows + j];
-        }
-    }
+
+    // Copy elements from the intermediate matrix to the final result matrix
+    //for (i = 0; i < N; i++) {
+    //    for (j = 0; j < N; j++) {
+    //        c.data[i * rows + j] = matrix->data[i * rows + j];
+    //    }
+    //}
+
+    // Return the final result matrix
     return c;
     //matvecFree(c);
 }
+
 
 void matrix2csv(char *filename, MatrixVector *matrix) {
     printf("\nCreating %s.csv file for matrix.", filename);
