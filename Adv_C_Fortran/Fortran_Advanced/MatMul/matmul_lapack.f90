@@ -5,7 +5,7 @@
 !   $ ifx -o matmul_lapack matmul_lapack.f90 -llapack -lblas
 !   $ ./matmul_lapack
 !---------------------------------------------------------------------------------
-! Installation requitements:
+! Installation requirements:
 !   sudo apt install liblapack3 
 !   sudo apt install liblapack-dev 
 !   sudo apt install libopenblas-base 
