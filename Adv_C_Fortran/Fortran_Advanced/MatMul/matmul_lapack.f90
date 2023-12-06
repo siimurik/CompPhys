@@ -1,9 +1,17 @@
 !---------------------------------------------------------------------------------
-! Compile and execute with:
-!   $ gfortran -o matmul_lapack matmul_lapack.f90 -L/usr/local/lib -llapack -lblas
+! Compile and execute with on Ubuntu:
+!   $ gfortran -o matmul_lapack matmul_lapack.f90 -llapack -lblas
 ! Or
 !   $ ifx -o matmul_lapack matmul_lapack.f90 -llapack -lblas
 !   $ ./matmul_lapack
+!---------------------------------------------------------------------------------
+! Installation requitements:
+!   sudo apt install liblapack3 
+!   sudo apt install liblapack-dev 
+!   sudo apt install libopenblas-base 
+!   sudo apt install libopenblas-dev 
+!   sudo apt install liblapacke-dev 
+!   sudo apt install liblapack-dev
 !---------------------------------------------------------------------------------
 ! For multithreading uncomment the line
 !   CALL OPENBLAS_SET_NUM_THREADS(8)
@@ -58,7 +66,7 @@ PROGRAM   MAIN
     C = 0.0
     
     ! Specify the number of cores to be used
-    CALL OPENBLAS_SET_NUM_THREADS(8)
+    !CALL OPENBLAS_SET_NUM_THREADS(4)
 
     PRINT *, "Computing matrix product using LAPACK DGEMM "
     PRINT *, "subroutine"
@@ -76,7 +84,7 @@ PROGRAM   MAIN
     WRITE (*,15) ELAPSED_SECONDS
     PRINT *, ""
     
-15      FORMAT(/'Calculation time is', F6.3, ' seconds.')
+15      FORMAT(/'Calculation time is ', F6.3, ' seconds.')
     !PRINT *, "Elapsed time:", ELAPSED_SECONDS, "seconds"
 
     PRINT *, "Top left corner of matrix A:"
