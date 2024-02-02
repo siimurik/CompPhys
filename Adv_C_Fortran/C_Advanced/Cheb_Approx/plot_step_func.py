@@ -1,13 +1,14 @@
+# On XFCE plotting won't work correctly for some reason without thhis command
+#   sudo apt-get install libxcb-xinerama0
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 data = np.loadtxt("data.dat")
 fiq=plt.figure(figsize=(10,10))
 
-p1=plt.subplot()
 #plt.xlim(2.4,4.0)
 #plt.ylim(0.0,1.0)
-p1.grid()
 #p1.set_aspect("equal")
 
 x = data[:,0]
@@ -22,5 +23,6 @@ plt.xlabel('x')
 plt.ylabel('f')
 plt.title('Chebyshev approximations to a step function')
 plt.legend()
+plt.grid()
 plt.show()
 
