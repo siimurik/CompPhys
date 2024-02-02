@@ -1,9 +1,9 @@
 # CompPhys
 
-Install all the necessary packages and libraries
+Install all dependencies:
 
 ```
-sudo apt install libomp-dev libgsl-dev liblapack3 liblapack-doc liblapack-dev
+sudo apt install libomp-dev libgsl-dev liblapack3 liblapack-doc liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
 
 # Project Descriptions
