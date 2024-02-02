@@ -1,5 +1,11 @@
 # CompPhys
 
+Install all the necessary packages and libraries
+
+```
+sudo apt install libomp-dev libgsl-dev liblapack3 liblapack-doc liblapack-dev
+```
+
 # Project Descriptions
 
 ## C_Advanced
