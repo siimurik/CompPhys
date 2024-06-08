@@ -6,20 +6,25 @@
 #define PI 4.0*atan(1.0)
 #define g 9.81
 
-//void matrix_csv(char *filename,double a[][N],int n,int m);
+void write_to_file(FILE *file, double t, double x, double y, double vx, double vy) {
+    // Set precision for each variable using %.17g for high precision
+    fprintf(file, "%.17g,\t%.17g,\t%.17g,\t%.17g,\t%.17g\n", t, x, y, vx, vy);
+}
 
 int main(){
     //----------------------------------------
     // Declaration of variables
-    double x0, y0, R, x, y, vx, vy, t, tf, dt;
+    double x0, y0, R, x, y, vx, vy, t, t0, tf, dt;
     double theta, v0x, v0y, v0;
     char str[4] = "buf";
     //----------------------------------------
     // Ask user for input:
+    printf("# Enter initial position (x0 & y0) values:\n");
+    scanf("%lf, %lf", &x0, &y0);
     printf("# Enter v0, theta (in degrees):\n");
     scanf("%lf, %lf", &v0, &theta);
-    printf("# Enter tf, dt:\n");
-    scanf("%lf, %lf", &tf, &dt);
+    printf("# Enter t0, tf, dt:\n");
+    scanf("%lf, %lf, %lf", &t0, &tf, &dt);
     printf("# v0  = %.3f", v0);
     printf("\ttheta = %.3f degrees\n", theta);
     printf("# t0  = %6.3f", 0.0);
@@ -44,41 +49,34 @@ int main(){
     v0y   = v0*sin(theta);
     printf("# v0x = %9.6lf\tv0y = %lf\n", v0x, v0y);
 
+    // Set initial position
+    // This is necessary bc if not defined before the 
+    // 'y' variable in the while loop can hold any 
+    // arbitrary value, which can mess up the condition 
+    // for the while to start properly.
+    x = x0;
+    y = y0;
+
+    // Open file for writing
+    FILE *file = fopen("output.csv", "w");
+    if (file == NULL) {
+        fprintf(stderr, "Error opening file for writing\n");
+        exit(1);
+    }
+
     //Compute
-    t = 0.0;
-    while (y <= -0.001) {
+    t = t0;
+    while (y >= 0) { //'>=' meaning while the projectile is above ground
         x = v0x * t;
         y = v0y*t - 0.5*g*t*t;
         vx = v0x;
         vy = v0y - g*t;
-        printf("%lf\t%lf\t%lf\t%lf\n", x, y, vx, vy);
+        printf("%lf\t%lf\t%lf\t%lf\t%lf\n", t, x, y, vx, vy);
+        //printf("%.17g\t%.17g\t%.17g\t%.17g\t%.17g\n", t, x, y, vx, vy); // Set precision for console output
+        write_to_file(file, t, x, y, vx, vy); // Write to file with precision
         t = t + dt;
     }
+
+    fclose(file);
     return 0;
 }
-
-//================================================================================
-// Function that creates and stores the temperature matrix values
-//================================================================================
-/* Example case:
-    // Save matrix output to CSV format 
-    char str[10] = "colors";
-    matrix_csv(str,c1,N,N);
-*/
-/*
-void matrix_csv(char *filename, double a[][N],int n,int m){
-    printf("\n Creating %s.csv file for matrix.",filename);
-    FILE *fp;
-    int i,j;
-    filename=strcat(filename,".csv");
-    fp=fopen(filename,"w+");
-    for(i = 0; i < m; i++){
-        for(j = 0; j < n; j++){
-            fprintf(fp,"%20.14f, ",a[i][j]);
-        }
-        fprintf(fp, "\n");
-    }
-    fclose(fp);
-    printf("\n %s file created.\n",filename);
-}
-*/
