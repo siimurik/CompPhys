@@ -126,7 +126,7 @@ contains
             do j = 1, NN
                 if (in_x_direction) then
                     ! If diffusion is in the x-direction
-                    w1 = a * cos(j * 2.0d0 * pi / dble(NN)) - floor(a * cos(j * 2.0d0 * pi / dble(NN)))
+                    w1 = a * cos(dble(j-1.d0) * 2.0d0 * pi / dble(NN)) - floor(a * cos(dble(j-1.d0) * 2.0d0 * pi / dble(NN)))
                     w2 = 1.0d0 - w1
 
                     if (j == 1) then
@@ -136,7 +136,7 @@ contains
                     end if
                 else
                     ! If diffusion is in the y-direction
-                    w1 = a * cos(i * 2.0d0 * pi / dble(NN)) - floor(a * cos(i * 2.0d0 * pi / dble(NN)))
+                    w1 = a * cos(dble(i-1.d0) * 2.0d0 * pi / dble(NN)) - floor(a * cos(dble(i-1.d0) * 2.0d0 * pi / dble(NN)))
                     w2 = 1.0d0 - w1
 
                     if (i == 1) then
