@@ -55,7 +55,7 @@ program main
 16  format('Elapsed time:', E10.3, ' seconds.')
 
     ! Export values into a custom CSV file
-    open(unit=1, file='c1_values.csv', status='replace')
+    open(unit=1, file='output.csv', status='replace')
     do i = 1, N
         ! Assuming c1 is a 2D array with dimensions (N, M)
         do j = 1, N

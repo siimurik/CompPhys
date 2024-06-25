@@ -55,7 +55,7 @@ program main
 16  format('Elapsed time:', E10.3, ' seconds.')
 
     ! Export values into a custom CSV file
-    open(unit=1, file='c1_values.csv', status='replace')
+    open(unit=1, file='output.csv', status='replace')
     do i = 1, N
         ! Assuming c1 is a 2D array with dimensions (N, M)
         do j = 1, N
@@ -150,3 +150,17 @@ contains
     end subroutine p_diffuse
 
 end program main
+
+!! Assuming c_in is a 2D array of size (N, N)
+!integer, dimension(N) :: indices(N)
+!real(kind=8), dimension(N, N) :: c_in
+!real(kind=8), dimension(N*N) :: temp_array
+!
+!! Initialize an array with indices from 1 to N
+!indices = [(i, i=1,N)]
+!
+!! Compute the sine values directly using vectorized operations
+!temp_array = SIN((indices - 1) * 2.0d0 * pi / dble(N))
+!
+!! Reshape the temporary array to match the shape of c_in
+!c_in = RESHAPE(temp_array, [N, N])

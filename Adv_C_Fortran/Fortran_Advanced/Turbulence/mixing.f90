@@ -56,8 +56,8 @@ program main
 16  format('Elapsed time:', E10.3, ' seconds.')
 
     ! Export values into a custom CSV file
-    call export_matrix_to_csv(c_out, 'c1_values.csv')
-    !open(unit=1, file='c1_values.csv', status='replace')
+    call export_matrix_to_csv(c_out, 'output.csv')
+    !open(unit=1, file='output.csv', status='replace')
     !do i = 1, N
     !    ! Assuming c1 is a 2D array with dimensions (N, M)
     !    do j = 1, N
