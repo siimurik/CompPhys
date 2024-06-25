@@ -88,18 +88,18 @@ int main() {
 
     for (i = 0; i < c1.rows; i++) { //same code that was in lecture: initial sine
         for (j = 0; j < c1.cols; j++) {
-            c1.data[i][j] = sin(j * pi * 2 / (double) N); //sine on i-axis
+            c1.data[i][j] = sin(j*pi*2/(double) N); //sine on i-axis
         }
     }
 
     //printMatrix(c1);
 
-    // Get starting time
-    clock_gettime(CLOCK_MONOTONIC, &start);
-    
     int numCycles;
     printf("Input the number of mixing cycles:\n");
     scanf("%d", &numCycles);
+
+    // Get starting time
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     c1 = iterate(numCycles, &c1);
 
@@ -124,16 +124,16 @@ int main() {
     // Initialize a complex matrix with zeros
     //ComplexMatrix mat_fft2 = matZerosComplex(N, N);
 
-    ComplexMatrix mat_fft2 = fft2(&c1);
+    //ComplexMatrix mat_fft2 = fft2(&c1);
 
-    printf("mat_fft2 = ");
-    printComplexMatrix(mat_fft2);
+    //printf("mat_fft2 = ");
+    //printComplexMatrix(mat_fft2);
 
-    ComplexMatrix mat_fftshift = fftshift(&mat_fft2);
+    //ComplexMatrix mat_fftshift = fftshift(&mat_fft2);
     
     /* Can't get fftshift to work :( */
-    printf("mat_fftshift = ");
-    printComplexMatrix(mat_fftshift);
+    //printf("mat_fftshift = ");
+    //printComplexMatrix(mat_fftshift);
     /*
     for (i = 0; i < N; i++){
         for (j = 0; j < N; j++){
@@ -151,8 +151,8 @@ int main() {
 
     //Free allocated memory
     matFree(c1);
-    matFreeComplex(mat_fft2);
-    matFreeComplex(mat_fftshift);
+    //matFreeComplex(mat_fft2);
+    //matFreeComplex(mat_fftshift);
     
     return 0;
 }
@@ -223,7 +223,7 @@ Matrix iterate(int no_of_times, Matrix *matrix) {
     for (k = 0; k < no_of_times; k++) {
         for (i = 0; i < N; i++) {
             for (j = 0; j < N; j++) {
-                if (k % 2 == 0) { //even => mixes one way, odd => another way
+                if (k % 2 == 0) {
                     c.data[i][j] = matrix->data[i][(j + (int)(a * cos(i * pi * 2 / N))) & N - 1];
                 } else {
                     c.data[i][j] = matrix->data[(i + (int)(a * cos(j * pi * 2 / N))) & N - 1][j];
@@ -231,20 +231,16 @@ Matrix iterate(int no_of_times, Matrix *matrix) {
             }
         }
         c = p_diffuse(&c, k % 2 == 0);
-        for (i = 0; i < N; i++) { //put elements of new matrix into the old one, continue changing matrix c.
+        for (i = 0; i < N; i++) {
             for (j = 0; j < N; j++) {
                 matrix->data[i][j] = c.data[i][j];
             }
         }
     }
-    for (i = 0; i < N; i++) { //put elements of new matrix into the old one, continue changing matrix c.
-        for (j = 0; j < N; j++) {
-            c.data[i][j] = matrix->data[i][j];
-        }
-    }
+    // No need to copy elements from 'matrix' back to 'c' here.
     return c;
-    matFree(c);
 }
+
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
