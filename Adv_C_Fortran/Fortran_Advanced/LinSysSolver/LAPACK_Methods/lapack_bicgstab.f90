@@ -1,6 +1,6 @@
 !========================================================
 ! Compile and execute with:
-!   $ gfortran -o lapack_bicgstab lapack_bicgstab.f90 -llapack
+!   $ gfortran -o lapack_bicgstab lapack_bicgstab.f90 -lblas
 !   $ ./bicgstab_solver <matrix dim> <tolerance> <max iterations>
 !--------------------------------------------------------
 ! For testing:
