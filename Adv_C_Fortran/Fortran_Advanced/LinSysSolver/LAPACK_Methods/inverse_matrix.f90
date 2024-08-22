@@ -10,8 +10,8 @@
 program main
     implicit none
     integer, parameter                   :: n = 200
-    integer                              :: i, j
-    double precision                     :: h, sum
+    integer                              :: i
+    double precision                     :: h
     double precision, dimension(n+1,n+1) :: A, C
     double precision, dimension(n+1)     :: y, x, u
     double precision :: start_time, end_time, elapsed_time
@@ -100,24 +100,24 @@ program main
 ! -- Returns the inverse of a general squared matrix A
 ! Returns the inverse of a matrix calculated by finding the LU
 ! decomposition.  Depends on LAPACK.
-    function inv(A) result(Ainv)
-        double precision, dimension(:,:), intent(in) :: A
-        double precision, dimension(size(A,1),size(A,2)) :: Ainv
-        double precision, dimension(size(A,1)) :: work  ! work array for LAPACK
-        integer, dimension(size(A,1)) :: ipiv   ! pivot indices
-        integer :: n, info
+    function inv(Amat) result(Ainv)
+        double precision, dimension(:,:), intent(in) :: Amat
+        double precision, dimension(size(Amat,1),size(Amat,2)) :: Ainv
+        double precision, dimension(size(Amat,1)) :: work  ! work array for LAPACK
+        integer, dimension(size(Amat,1)) :: ipiv   ! pivot indices
+        integer :: m, info
 
         ! External procedures defined in LAPACK
         external DGETRF
         external DGETRI
 
-        ! Store A in Ainv to prevent it from being overwritten by LAPACK
-        Ainv = A
-        n = size(A,1)
+        ! Store Amat in Ainv to prevent it from being overwritten by LAPACK
+        Ainv = Amat
+        m = size(Amat,1)
 
         ! DGETRF computes an LU factorization of a general M-by-N matrix A
         ! using partial pivoting with row interchanges.
-        call DGETRF(n, n, Ainv, n, ipiv, info)
+        call DGETRF(m, m, Ainv, m, ipiv, info)
 
         if (info /= 0) then
             stop 'Matrix is numerically singular!'
@@ -125,7 +125,7 @@ program main
 
         ! DGETRI computes the inverse of a matrix using the LU factorization
         ! computed by DGETRF.
-        call DGETRI(n, Ainv, n, ipiv, work, n, info)
+        call DGETRI(m, Ainv, m, ipiv, work, m, info)
 
         if (info /= 0) then
             stop 'Matrix inversion failed!'
