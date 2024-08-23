@@ -5,6 +5,11 @@ Install all dependencies:
 ```
 sudo apt install libomp-dev libgsl-dev liblapack3 liblapack-doc liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 ```
+Python dependencies:
+
+```
+pip install numpy numba scipy h5py matplotlib requests pyXSteam tqdm notebook PyQt5
+```
 
 # Project Descriptions
 
