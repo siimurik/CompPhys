@@ -1,34 +1,3 @@
-program main
-    use module_det
-    implicit none
-    integer, parameter :: np = 3
-    real    :: a(np,np), d
-    integer :: i, n!, indx(np)
-
-    ! Set the size of the square matrix
-    n = np
-
-    ! Initialize matrix 'a' 
-    a = reshape((/ 2.0,  3.0, -1.0, &
-                   3.0,  5.0,  2.0, &
-                   1.0, -1.0,  3.0 /),[np,np])
-    ! Transpose the matrix
-    a = transpose(a)
-
-    ! Print the results
-    write(*,*) 'Original Matrix A:'
-    do i = 1, n
-        write(*, '(6F10.6)') a(i, :)
-    end do
-
-    ! Calculate the determinant
-    d = det(a)
-
-    write(*,*) 'Determinant of Matrix:'
-    write(*, '(6F10.6)') d
-
-end program main
-
 module module_det
     implicit none
 
@@ -127,3 +96,35 @@ module module_det
     END SUBROUTINE ludcmp
 
 end module module_det
+
+program main
+    use module_det
+    implicit none
+    integer, parameter :: np = 3
+    real    :: a(np,np), d
+    integer :: i, n!, indx(np)
+
+    ! Set the size of the square matrix
+    n = np
+
+    ! Initialize matrix 'a' 
+    a = reshape((/ 2.0,  3.0, -1.0, &
+                   3.0,  5.0,  2.0, &
+                   1.0, -1.0,  3.0 /),[np,np])
+    ! Transpose the matrix
+    a = transpose(a)
+
+    ! Print the results
+    write(*,*) 'Original Matrix A:'
+    do i = 1, n
+        write(*, '(6F10.6)') a(i, :)
+    end do
+
+    ! Calculate the determinant
+    d = det(a)
+
+    write(*,*) 'Determinant of Matrix:'
+    write(*, '(6F10.6)') d
+
+end program main
+
