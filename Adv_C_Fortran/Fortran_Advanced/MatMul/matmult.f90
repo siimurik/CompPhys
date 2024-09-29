@@ -91,10 +91,10 @@ program main
     use matrix_module
     implicit none
     !integer             :: i, j
-    integer, parameter  :: M=1000, K=1000, N=1000
+    integer, parameter  :: M=5000, K=5000, N=5000
     double precision, dimension(M,K) :: A
     double precision, dimension(K,N) :: B
-    double precision, allocatable, dimension(:,:) :: C1, C2
+    double precision, allocatable, dimension(:,:) :: C1!, C2
     integer :: start_time, end_time, elapsed_time, rate
     real    :: elapsed_seconds
     !character(len=15) :: mformat='(100(F14.6,1x))'
@@ -118,7 +118,7 @@ program main
 
     ! Two approaches to do matrix multplication
     call matrix_multiply(A, B, C1)  ! subroutine
-    C2 = matfunc(A, B)              ! function
+    !C2 = matfunc(A, B)              ! function
 
     call SYSTEM_CLOCK(count=end_time)
     elapsed_time = end_time - start_time
@@ -133,7 +133,7 @@ program main
     !    write(*,mformat) (C1(i,j), j = 1, 5)
     !end do
     call print_matrix(C1, 'Matrix C1 values:')
-    call print_matrix(C2)
+    !call print_matrix(C2)
 
 15  format(/'Calculation time is', F6.3, ' seconds.')
 
