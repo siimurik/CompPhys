@@ -1,6 +1,6 @@
 !==============================================
 ! Compile and execute with:
-!   $ gfortran -O3 mat.f90 -o mat -lblas
+!   $ gfortran -O3 mat.f90 -o mat -lblas -fopenmp
 !   $ ./mat
 !==============================================
 program main
