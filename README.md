@@ -3,7 +3,7 @@
 Install all dependencies:
 
 ```
-sudo apt install libomp-dev libgsl-dev liblapack3 liblapack-doc liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
+sudo apt install libomp-dev libgsl-dev liblapack3 liblapack-doc liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev libplplot-dev
 ```
 Python dependencies:
 
