@@ -72,8 +72,8 @@ def animate(i, dt, r1, v1, q1, r2, v2, q2, line1, line2, trail1, trail2):
     return line1, line2, trail1, trail2
 
 # Initial conditions
-q1 = float(input("Enter charge of particle 1 (in C): "))
-q2 = float(input("Enter charge of particle 2 (in C): "))
+q1 = 1E-6
+q2 = 1E-6
 r1_global = np.array([3.5, 5.0])
 v1_global = np.array([0.0, -0.1])  # Moving towards negative y direction
 r2_global = np.array([4.5, 3.0])
