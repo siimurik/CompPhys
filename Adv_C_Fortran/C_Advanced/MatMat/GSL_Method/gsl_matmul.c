@@ -18,8 +18,9 @@ Help with compiling commands
 #include <stdio.h>
 #include <gsl/gsl_blas.h>
 
-int
-main (void)
+#define CLOCK_MONOTONIC 1
+
+int main (void)
 {   
     struct timespec start, stop;
     int n = 5000;
