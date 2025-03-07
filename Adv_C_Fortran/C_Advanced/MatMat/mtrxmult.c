@@ -17,7 +17,9 @@
 #define ROW_COL_PARALLEL_INNER_TILING_TILE_SIZE 64
 
 // Define matrix dimesions
-#define dim 1024
+#define dim 5000
+
+#define CLOCK_MONOTONIC 1
 
 // Define a custom matrix structure
 typedef struct {

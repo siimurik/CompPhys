@@ -1,8 +1,8 @@
-!================================================
+!==================================================
 ! Compile and execute with:
-!   $ gfortran -O3 mat.f90 -o mat -lblas -fopenmp
+!   $ gfortran -O3 mat.f90 -o mat -lopenblas -lblas
 !   $ ./mat
-!================================================
+!==================================================
 program main
     implicit none
     !integer :: i, j
@@ -45,7 +45,7 @@ program main
     PRINT *, "Computations completed."
     WRITE (*,15) ELAPSED_SECONDS
     PRINT *, ""
-15  FORMAT(/'Calculation time is ', F6.3, ' seconds.')
+15  FORMAT(/'Calculation time is ', E6.4, ' seconds.')
 
     ! Print out the result
     call print_matrix(c, 'Matrix C')
