@@ -1,9 +1,10 @@
 /*
  Optimized matrix multiplication with BLAS and OpenMP
  Compile with:
-    gcc -O3 -march=native -fopenmp optimized_matmul.c -o matmul -lopenblas -lm
+    gcc -O3 mat.c -o mat -lopenblas -fopenmp
+    gcc -O3 -march=native -fopenmp mat.c -o mat -lopenblas -lm
  On Mac:
-    clang -O3 -march=native -Xclang -fopenmp -L/opt/homebrew/opt/libomp/lib -I/opt/homebrew/opt/libomp/include -lomp optimized_matmul.c -o matmul -lopenblas -lm
+    clang -O3 -march=native -Xclang -fopenmp -L/opt/homebrew/opt/libomp/lib -I/opt/homebrew/opt/libomp/include -lomp mat.c -o mat -lopenblas -lm
 */
 
 #include <stdio.h>
