@@ -2,6 +2,15 @@
 ! Compile and execute with:
 !   $ gfortran matmult.f90 -o mm -llapack -lblas
 !   $ ./mm
+! Compiling on Windows:
+!   $ gfortran matmult.f90 -o mm.exe -LC:\OpenBLAS\lib -lopenblas
+!----------------------------------------------
+! Download source for MinGW-64:
+!    Link: https://github.com/niXman/mingw-builds-binaries/releases
+!    > x86_64-15.1.0-release-mcf-seh-ucrt-rt_v12-rev0.7z
+! Download source for OpenBlas:
+!    Link: https://github.com/OpenMathLib/OpenBLAS/releases
+!    > OpenBLAS-0.3.30-x64.zip
 !==============================================
 module matrix_module
     implicit none
