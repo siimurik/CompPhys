@@ -66,7 +66,7 @@ END PROGRAM ODE_SOLVER
 SUBROUTINE PRINT_HEADER(RELERR, ABSERR)
     IMPLICIT NONE
     DOUBLE PRECISION, INTENT(IN) :: RELERR, ABSERR
-    WRITE (*, '(A)') 'Charged Particle in Earth''s Dipole Magnetic Field (RKF45)'
+    WRITE (*, '(A)') 'Charged Particle in Earth''s Dipole Magnetic Field (ODE)'
     WRITE (*, '(A, E8.1, A, E8.1)') 'Tolerances: RELERR=', RELERR, ', ABSERR=', ABSERR
     WRITE (*, '(A)') REPEAT('-', 60)
 END SUBROUTINE PRINT_HEADER
