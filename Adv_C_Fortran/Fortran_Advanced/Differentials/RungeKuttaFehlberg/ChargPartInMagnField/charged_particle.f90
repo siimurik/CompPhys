@@ -1,5 +1,38 @@
 ! ===============================================================================
-! CHARGED PARTICLE MOTION IN EARTH'S MAGNETIC FIELD (RKF45 driver)
+! CHARGED PARTICLE MOTION IN EARTH'S MAGNETIC FIELD
+! ===============================================================================
+! 
+! This program simulates the motion of a charged particle (proton) in Earth's
+! dipole magnetic field using the Runge-Kutta-Fehlberg (RKF45) integration method.
+!
+! PHYSICAL SYSTEM:
+! The motion is governed by the Lorentz force equation:
+!   m * dv/dt = q * (v × B)
+! 
+! Where:
+!   - m = particle mass (kg)
+!   - q = particle charge (C)
+!   - v = particle velocity vector (m/s)
+!   - B = magnetic field vector (T)
+!
+! DIFFERENTIAL EQUATION SYSTEM:
+! The 6 first-order ODEs represent position and velocity components:
+!   dx/dt = vx    (position derivatives)
+!   dy/dt = vy
+!   dz/dt = vz
+!   dvx/dt = (q/m) * (vy*Bz - vz*By)    (Lorentz force components)
+!   dvy/dt = (q/m) * (vz*Bx - vx*Bz)
+!   dvz/dt = (q/m) * (vx*By - vy*Bx)
+!
+! COORDINATE SYSTEM:
+! - Origin at Earth's center
+! - Units: kilometers for distance, km/s for velocity
+! - Earth radius R_earth = 6378.137 km
+!
+! MAGNETIC FIELD MODEL:
+! Earth's dipole field approximation:
+!   B = (μ₀/4π) * (M/r³) * [3(M̂·r̂)r̂ - M̂]
+! Simplified to: B₀ * magnetic_dipole_field(x,y,z)
 ! ===============================================================================
 
 PROGRAM charged_particle_motion
@@ -66,6 +99,19 @@ PROGRAM charged_particle_motion
 END PROGRAM charged_particle_motion
 
 ! ===============================================================================
+! SUBROUTINE: MAGNETIC FIELD CALCULATION
+! ===============================================================================
+! Calculates Earth's dipole magnetic field at position (x,y,z)
+! 
+! INPUT:  x, y, z - position coordinates (normalized by Earth radius)
+! OUTPUT: B(3)    - magnetic field components [Bx, By, Bz] (Tesla)
+!
+! The dipole field formula assumes the magnetic dipole is aligned with z-axis:
+!   Bx = -B₀ * 3xz/r⁵
+!   By = -B₀ * 3yz/r⁵  
+!   Bz = -B₀ * (2z² - x² - y²)/r⁵
+! where r = √(x² + y² + z²)
+! ===============================================================================
 SUBROUTINE calc_magn_field(x, y, z, B)
     IMPLICIT NONE
     DOUBLE PRECISION, INTENT(IN) :: x, y, z
@@ -92,6 +138,18 @@ SUBROUTINE calc_magn_field(x, y, z, B)
     B(3) = mu0_4pi * (3.D0 * (mx*x + my*y + mz*z)*z / r5 - mz / r3)
 END SUBROUTINE calc_magn_field
 
+! ===============================================================================
+! SUBROUTINE: DIFFERENTIAL EQUATION SYSTEM
+! ===============================================================================
+! Defines the system of 6 first-order ODEs for charged particle motion
+!
+! INPUT:  t    - current time
+!         y(6) - state vector [x, y, z, vx, vy, vz]
+! OUTPUT: yp(6) - derivatives [dx/dt, dy/dt, dz/dt, dvx/dt, dvy/dt, dvz/dt]
+!
+! The equations represent:
+! - Position derivatives: dr/dt = v
+! - Velocity derivatives: dv/dt = (q/m) * (v × B)
 ! ===============================================================================
 SUBROUTINE func(t, y, yp)
     IMPLICIT NONE
