@@ -17,7 +17,6 @@
 
 #define DIM 5000
 #define DISPLAY_SIZE 5
-#define CLOCK_MONOTONIC 1
 
 typedef struct {
     double *data;  // Contiguous memory block
@@ -27,11 +26,16 @@ typedef struct {
 
 // Function prototypes
 Matrix matrix_create(int rows, int cols);
-Matrix matrix_random(int rows, int cols);
 void matrix_free(Matrix mat);
 void matrix_print(Matrix mat, const char *title);
 void matrix_multiply_blas(const Matrix *A, const Matrix *B, Matrix *C);
 void parallel_initialize(Matrix *mat);
+
+// Thread-safe random number generator
+double thread_safe_rand(unsigned int *seed) {
+    *seed = (*seed * 1103515245 + 12345) & 0x7FFFFFFF;
+    return (double)(*seed) / 0x7FFFFFFF;
+}
 
 int main() {
     struct timespec start, end;
@@ -70,7 +74,7 @@ int main() {
     matrix_print(B, "Matrix B");
     
     // Matrix multiplication
-    printf("\nMultiplying matrices (%dx%d) × (%dx%d)...\n", DIM, DIM, DIM, DIM);
+    printf("\nMultiplying matrices (%dx%d) x (%dx%d)...\n", DIM, DIM, DIM, DIM);
     clock_gettime(CLOCK_MONOTONIC, &start);
     
     matrix_multiply_blas(&A, &B, &C);
@@ -95,7 +99,9 @@ Matrix matrix_create(int rows, int cols) {
     Matrix mat;
     mat.rows = rows;
     mat.cols = cols;
-    mat.data = (double *)aligned_alloc(64, rows * cols * sizeof(double));
+    
+    // Simple malloc - alignment not critical for this example
+    mat.data = (double *)malloc(rows * cols * sizeof(double));
     if (mat.data == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
@@ -105,11 +111,14 @@ Matrix matrix_create(int rows, int cols) {
 
 // Parallel matrix initialization
 void parallel_initialize(Matrix *mat) {
-    unsigned int seed = time(NULL) + omp_get_thread_num();
-    
-    #pragma omp parallel for
-    for (int i = 0; i < mat->rows * mat->cols; i++) {
-        mat->data[i] = (double)rand_r(&seed) / RAND_MAX;
+    // Use thread-safe random number generation with custom PRNG
+    #pragma omp parallel
+    {
+        unsigned int seed = (unsigned int)(time(NULL) + omp_get_thread_num());
+        #pragma omp for
+        for (int i = 0; i < mat->rows * mat->cols; i++) {
+            mat->data[i] = thread_safe_rand(&seed);
+        }
     }
 }
 
