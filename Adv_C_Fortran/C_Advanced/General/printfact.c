@@ -1,0 +1,58 @@
+/* printfact.c */
+/*
+ * Program to print factorials aof all integers
+ * between 0 and 20
+ *
+ * Compile with:
+ *
+ * 	> gcc printfact.c -o printfact
+ *
+ * /
+
+#include <stdio.h>
+#include <stdlib.h>
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+double factorial(int n)
+{
+	/*
+	 	Function to evaluate factorial (in floating-point form)
+		of non-egative integer n.
+	 */
+	int count;
+	double fact = 1.0;
+
+	/* Abort if n is negative integer */
+	if (n < 0)
+	{
+		printf("\nError: factorial of negative integer not defined\n");
+		exit(1);
+	}
+	
+	/* Calculate factorial */
+	for (count = n; count > 0; count--)
+	{
+		fact *= (double) count;
+	}
+
+	/* Return value of factorial */
+	return fact;
+}
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+int main()
+{
+	int j;
+
+	/* Print factorials of all integers between 0 and 20 */
+	for (j = 0; j <= 20; j++)
+	{
+		printf("factorial(%2d) = %12.3e\n", j, factorial(j));
+	}
+
+	return 0;
+}
