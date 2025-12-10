@@ -2,7 +2,7 @@
 ! DRIVER FOR DOPRI5 ON NON-STIFF RLC CIRCUIT
 !
 ! Compile with:
-!   gfortran -O2 dr_rlc_dopri5.f90 dopri5.f90 -o rlc_dopri5
+!   gfortran -O2 rlc_dopri.f90 dopri5.f90 -o rlc_dopri
 !==============================================================================
 PROGRAM RLC_DOPRI5
     IMPLICIT NONE
